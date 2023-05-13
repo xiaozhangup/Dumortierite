@@ -1,0 +1,38 @@
+//file:noinspection GroovyAssignabilityCheck
+
+plugins {
+    id 'dev.clojurephant.clojure' version '0.7.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'java-library'
+}
+
+group = 'io.sn'
+version = '0.1.0'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://jitpack.io/' }
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+}
+
+dependencies {
+    implementation 'org.clojure:clojure:1.11.1'
+
+    //noinspection VulnerableLibrariesLocal
+    compileOnly 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
+    compileOnly 'com.github.StarWishsama:Slimefun4:2023.02'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+clojure {
+    builds {
+        main {
+            aotAll()
+        }
+    }
+}

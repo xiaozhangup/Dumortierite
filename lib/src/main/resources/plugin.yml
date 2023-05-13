@@ -1,5 +1,5 @@
 name: Dumortierite
-version: $version
+version: 0.1.0
 author: Sapphira Tempest
 description: A Slimefun4 addon that add some useful gadgets.
 website: https://github.com/freeze-dolphin/Dumortierite
@@ -10,4 +10,5 @@ depend: [Slimefun]
 api-version: 1.19
 
 libraries:
-  - org.jetbrains.kotlin:kotlin-stdlib:1.8.10
+  - org.jetbrains.kotlin:kotlin-stdlib:1.7.10
+  - org.clojure:clojure:1.11.1
