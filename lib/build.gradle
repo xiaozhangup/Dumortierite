@@ -6,9 +6,6 @@ plugins {
     id 'java-library'
 }
 
-group = 'io.sn'
-version = '0.1.0'
-
 repositories {
     mavenCentral()
     maven { url = 'https://jitpack.io/' }
@@ -21,6 +18,9 @@ dependencies {
     //noinspection VulnerableLibrariesLocal
     compileOnly 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
     compileOnly 'com.github.StarWishsama:Slimefun4:2023.02'
+    compileOnly 'com.github.StarWishsama.dough:dough-api:4f7357184a'
+    compileOnly 'commons-lang:commons-lang:2.6'
+
 }
 
 java {
