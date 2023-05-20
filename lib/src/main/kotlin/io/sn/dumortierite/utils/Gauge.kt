@@ -21,7 +21,7 @@ open class Gauge(
 
     fun withGradient(borderLeft: Char, borderRight: Char): Component {
         return MiniMessage.miniMessage()
-            .deserialize("<gray>$borderLeft<gradient:FF5555:FFFF55:55FF55>$this</gradient>$borderRight")
+            .deserialize("<gray>$borderLeft<gradient:#FF5555:#FFFF55:#55FF55>$this</gradient>$borderRight")
     }
 
 }
