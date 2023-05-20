@@ -15,7 +15,7 @@ class DumoCore : JavaPlugin(), DumoSlimefunAddon {
     }
     
     override fun onEnable() {
-        server.pluginManager.registerEvents(TestListener(), this)
+        // server.pluginManager.registerEvents(TestListener(), this)
     }
 
 }
