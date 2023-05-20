@@ -1,8 +1,5 @@
-//file:noinspection GroovyAssignabilityCheck
-
 plugins {
-    id 'dev.clojurephant.clojure' version '0.7.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
     id 'java-library'
 }
 
@@ -13,26 +10,12 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.clojure:clojure:1.11.1'
-
-    //noinspection VulnerableLibrariesLocal
-    compileOnly 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
     compileOnly 'com.github.StarWishsama:Slimefun4:2023.02'
-    compileOnly 'com.github.StarWishsama.dough:dough-api:4f7357184a'
-    compileOnly 'commons-lang:commons-lang:2.6'
-
+    compileOnly 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
 }
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
-clojure {
-    builds {
-        main {
-            aotAll()
-        }
     }
 }

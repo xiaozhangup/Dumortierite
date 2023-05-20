@@ -10,5 +10,4 @@ depend: [Slimefun]
 api-version: 1.19
 
 libraries:
-  - org.jetbrains.kotlin:kotlin-stdlib:1.7.10
-  - org.clojure:clojure:1.11.1
+  - org.jetbrains.kotlin:kotlin-stdlib:1.8.10
