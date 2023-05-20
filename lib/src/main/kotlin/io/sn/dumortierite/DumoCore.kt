@@ -2,6 +2,7 @@ package io.sn.dumortierite
 
 import org.bukkit.plugin.java.JavaPlugin
 
+@Suppress("unused")
 class DumoCore : JavaPlugin(), DumoSlimefunAddon {
 
     override fun getJavaPlugin(): JavaPlugin {
@@ -11,8 +12,7 @@ class DumoCore : JavaPlugin(), DumoSlimefunAddon {
     override fun getBugTrackerURL(): String {
         return "https://github.com/freeze-dolphin/Dumortierite/issues"
     }
-
-
+    
     override fun onEnable() {
         TODO()
     }
