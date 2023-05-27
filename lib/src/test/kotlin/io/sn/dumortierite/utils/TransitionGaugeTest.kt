@@ -1,14 +1,13 @@
 package io.sn.dumortierite.utils
 
-import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 class TransitionGaugeTest {
 
     @Test
-    fun testInsertGauge() {
-        val lengthHalf = 10
+    fun testGauge() {
+        val lengthHalf= 10
         val separator = '/'
         val progress = "|"
         val unit = "J"
@@ -18,4 +17,5 @@ class TransitionGaugeTest {
         assertEquals("||||| 100 J / 1500 J ||||", TransitionGauge(lengthHalf, separator, progress, 100F, 1500F, unit).toString())
         assertEquals("|||| 1000 J / 1500 J ||||", TransitionGauge(lengthHalf, separator, progress, 1000F, 1500F, unit).toString())
     }
+
 }

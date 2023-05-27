@@ -8,4 +8,5 @@ interface DumoSlimefunAddon : SlimefunAddon {
     override fun getName(): String
 
     override fun getLogger(): Logger
+
 }

@@ -12,3 +12,4 @@ api-version: 1.19
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:1.8.10
   - net.kyori:adventure-text-minimessage:4.13.1
+  - org.jruby:jruby-complete:9.4.2.0

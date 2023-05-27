@@ -1,7 +1,7 @@
 package io.sn.dumortierite.utils
 
+import io.sn.dumortierite.DumoCore
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage
 
 open class TransitionGauge(
     private val lengthInHalf: Int,
@@ -24,8 +24,18 @@ open class TransitionGauge(
     }
 
     fun withGradient(borderLeft: Char, borderRight: Char): Component {
-        return MiniMessage.miniMessage()
-            .deserialize("<gray>$borderLeft<transition:#FF5555:#FFFF55:#55FF55:${currentVal / maxVal}>$this</transition>$borderRight")
+        val ratio = currentVal / maxVal
+        val cutted = cutString(this.toString(), ratio)
+
+        return DumoCore.minimsg
+            .deserialize("<gray>$borderLeft<transition:#FF5555:#FFFF55:#55FF55:$ratio>${cutted.first}</transition>${cutted.second}$borderRight")
+    }
+
+    private fun cutString(str: String, ratio: Float): Pair<String, String> {
+        val mid = (str.length * ratio).toInt()
+        return Pair(
+            str.slice(0 until mid), str.slice(mid until str.length)
+        )
     }
 
 }
