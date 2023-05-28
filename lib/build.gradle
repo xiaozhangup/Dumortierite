@@ -1,3 +1,7 @@
+import java.nio.file.CopyOption
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.8.10'
     id 'java-library'
@@ -18,6 +22,8 @@ dependencies {
     implementation 'com.github.StarWishsama:Slimefun4:2023.02'
 
     implementation 'net.kyori:adventure-text-minimessage:4.13.1'
+
+    implementation 'org.codehaus.groovy:groovy-jsr223:3.0.17'
 }
 
 java {
@@ -30,3 +36,11 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+tasks.register('dest') {
+    doLast {
+        Files.copy(new File(buildDir.path + "\\libs\\lib.jar").toPath(), new File("D:\\MinecraftDev\\mc-server\\paper-1192\\plugins\\lib.jar").toPath(), StandardCopyOption.REPLACE_EXISTING)
+    }
+}
+
+tasks.dest.dependsOn('build')
