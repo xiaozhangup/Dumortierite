@@ -1,16 +1,23 @@
-import java.nio.file.CopyOption
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'dev.clojurephant.clojure' version '0.7.0'
     id 'java-library'
 }
+
+group = 'io.sn'
+version = '0.1.0'
 
 repositories {
     mavenCentral()
     maven { url = 'https://jitpack.io/' }
     maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+    maven {
+        name = 'Clojars'
+        url = 'https://repo.clojars.org/'
+    }
 }
 
 dependencies {
@@ -24,6 +31,7 @@ dependencies {
     implementation 'net.kyori:adventure-text-minimessage:4.13.1'
 
     implementation 'org.codehaus.groovy:groovy-jsr223:3.0.17'
+    implementation 'org.clojure:clojure:1.11.1'
 }
 
 java {
