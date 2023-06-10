@@ -12,13 +12,7 @@ version = '0.1.0'
 
 clojure.builds.configure {
     main {
-        // reset Clojure classpath to only include dependencies
         classpath.from = sourceSets.main.compileClasspath
-
-        // or if you also need the sources on the classpath
-        // classpath.from = sourceSets.main.compileClasspath + tasks.named(sourceSets.main.processResourcesTaskName)
-
-        // makes sure you AOT at least the namespace that produces the class(es) Java uses
         aotAll()
     }
 }
@@ -39,9 +33,8 @@ dependencies {
     //noinspection VulnerableLibrariesLocal
     implementation 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
 
-    implementation 'com.github.StarWishsama:Slimefun4:2023.06'
+    implementation 'com.github.HAPPYLAND-Dev:Slimefun4:7c840d2b79'
     implementation 'com.github.LoneDev6:API-ItemsAdder:3.4.1-r4'
-    implementation 'com.github.Xzavier0722:SlimefunCompLib:b7a2bd8'
 
     implementation 'net.kyori:adventure-text-minimessage:4.13.1'
 
@@ -69,7 +62,7 @@ tasks.named('test') {
 
 tasks.register('dest') {
     doLast {
-        Files.copy(new File(buildDir.path + "\\libs\\lib.jar").toPath(), new File("D:\\MinecraftDev\\mc-server\\paper-1192\\plugins\\lib.jar").toPath(), StandardCopyOption.REPLACE_EXISTING)
+        Files.copy(new File(buildDir.path + "\\libs\\lib-0.1.0.jar").toPath(), new File("D:\\MinecraftDev\\mc-server\\paper-1192\\plugins\\lib.jar").toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 }
 
