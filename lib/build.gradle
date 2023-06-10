@@ -10,23 +10,38 @@ plugins {
 group = 'io.sn'
 version = '0.1.0'
 
+clojure.builds.configure {
+    main {
+        // reset Clojure classpath to only include dependencies
+        classpath.from = sourceSets.main.compileClasspath
+
+        // or if you also need the sources on the classpath
+        // classpath.from = sourceSets.main.compileClasspath + tasks.named(sourceSets.main.processResourcesTaskName)
+
+        // makes sure you AOT at least the namespace that produces the class(es) Java uses
+        aotAll()
+    }
+}
+
 repositories {
     mavenCentral()
     maven { url = 'https://jitpack.io/' }
     maven { url = 'https://repo.papermc.io/repository/maven-public/' }
-    maven {
-        name = 'Clojars'
-        url = 'https://repo.clojars.org/'
-    }
+    maven { url = 'https://repo.clojars.org/' }
 }
 
 dependencies {
+    devImplementation 'org.clojure:tools.namespace:1.3.0'
+
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
 
     //noinspection VulnerableLibrariesLocal
     implementation 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
-    implementation 'com.github.StarWishsama:Slimefun4:2023.02'
+
+    implementation 'com.github.StarWishsama:Slimefun4:2023.06'
+    implementation 'com.github.LoneDev6:API-ItemsAdder:3.4.1-r4'
+    implementation 'com.github.Xzavier0722:SlimefunCompLib:b7a2bd8'
 
     implementation 'net.kyori:adventure-text-minimessage:4.13.1'
 
@@ -40,8 +55,15 @@ java {
     }
 }
 
+tasks.named('compileJava') {
+    classpath += files(sourceSets.main.clojure.classesDirectory)
+}
+
+tasks.named('compileKotlin') {
+    classpath += files(sourceSets.main.clojure.classesDirectory)
+}
+
 tasks.named('test') {
-    // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
 
