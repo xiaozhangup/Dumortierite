@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.sn.dumortierite.utils
 
 import io.sn.dumortierite.DumoCore

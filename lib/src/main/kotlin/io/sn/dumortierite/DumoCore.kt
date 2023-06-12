@@ -1,11 +1,13 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package io.sn.dumortierite
 
+import groovy.lang.Binding
+import groovy.lang.GroovyShell
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
-import java.nio.file.Files
-import javax.script.ScriptEngineManager
 
 
 @Suppress("unused")
@@ -20,6 +22,7 @@ class DumoCore : JavaPlugin(), DumoSlimefunAddon {
     }
 
     lateinit var plug: DumoCore
+    lateinit var setupScriptFile: File
 
     companion object {
         var plug: DumoCore = DumoCore.plug
@@ -29,6 +32,7 @@ class DumoCore : JavaPlugin(), DumoSlimefunAddon {
 
     override fun onEnable() {
         plug = this
+        setupScriptFile = File("${dataFolder.path}${File.separator}setup.groovy")
 
         setupResource()
         setupSlimefun()
@@ -36,43 +40,22 @@ class DumoCore : JavaPlugin(), DumoSlimefunAddon {
 
     private fun setupResource() {
         saveConfig()
-
-        val rbDir = File("${dataFolder.path}${File.separator}scripts")
-        val rbfSetup = File("${dataFolder.path}${File.separator}scripts${File.separator}setup.groovy")
-        rbDir.mkdirs()
-
-        if (!rbfSetup.exists()) {
-            ClassLoader.getSystemClassLoader().getResourceAsStream("scripts${File.separator}setup.groovy")
-                .use { input ->
-                    input?.let { Files.copy(it, rbfSetup.toPath()) }
-                }
-        }
-
-    }
-
-    private fun reachScript(@Suppress("SameParameterValue") name: String): String {
-        return File("${dataFolder.path}${File.separator}scripts${File.separator}$name").readText(Charsets.UTF_8)
+        if (!setupScriptFile.exists()) saveResource("setup.groovy", false)
     }
 
     private fun setupSlimefun() {
-        val sem = ScriptEngineManager()
-        val factories = sem.engineFactories
-        for (factory in factories) println(factory.engineName + " " + factory.engineVersion + " " + factory.names)
-
-
-        with(sem.getEngineByExtension("groovy")) {
-            val ctx = createBindings().apply {
-                // prepare vars for setup
-                put("core", plug)
+        try {
+            with(
+                GroovyShell(this.classLoader, Binding().apply {
+                    setProperty("core", plug)
+                })
+            ) {
+                evaluate(setupScriptFile)
             }
-
-            try {
-                eval(reachScript("setup.groovy"), ctx)
-            } catch (e: Exception) {
-                Exception("Unexcepted error occurred while loading 'setup.groovy'!\n${e.stackTrace}").printStackTrace()
-            }
+        } catch (e: Exception) {
+            Exception("Unexcepted error occurred while loading 'setup.groovy'!\n${e.message}").printStackTrace()
         }
     }
 
-}
 
+}

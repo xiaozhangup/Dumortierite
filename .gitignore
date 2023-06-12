@@ -5,3 +5,6 @@
 build
 
 .idea
+
+**/*lock*
+**/.nrepl-port

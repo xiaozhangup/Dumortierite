@@ -3,43 +3,31 @@ import java.nio.file.StandardCopyOption
 
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.10'
-    id 'dev.clojurephant.clojure' version '0.7.0'
     id 'java-library'
 }
 
 group = 'io.sn'
 version = '0.1.0'
 
-clojure.builds.configure {
-    main {
-        classpath.from = sourceSets.main.compileClasspath
-        aotAll()
-    }
-}
-
 repositories {
     mavenCentral()
     maven { url = 'https://jitpack.io/' }
     maven { url = 'https://repo.papermc.io/repository/maven-public/' }
-    maven { url = 'https://repo.clojars.org/' }
 }
 
 dependencies {
-    devImplementation 'org.clojure:tools.namespace:1.3.0'
-
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
 
     //noinspection VulnerableLibrariesLocal
     implementation 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
 
-    implementation 'com.github.HAPPYLAND-Dev:Slimefun4:7c840d2b79'
+    implementation 'com.github.HAPPYLAND-Dev:Slimefun4:20fcda1ffe'
     implementation 'com.github.LoneDev6:API-ItemsAdder:3.4.1-r4'
 
     implementation 'net.kyori:adventure-text-minimessage:4.13.1'
 
     implementation 'org.codehaus.groovy:groovy-jsr223:3.0.17'
-    implementation 'org.clojure:clojure:1.11.1'
 }
 
 java {
@@ -48,21 +36,13 @@ java {
     }
 }
 
-tasks.named('compileJava') {
-    classpath += files(sourceSets.main.clojure.classesDirectory)
-}
-
-tasks.named('compileKotlin') {
-    classpath += files(sourceSets.main.clojure.classesDirectory)
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }
 
 tasks.register('dest') {
     doLast {
-        Files.copy(new File(buildDir.path + "\\libs\\lib-0.1.0.jar").toPath(), new File("D:\\MinecraftDev\\mc-server\\paper-1192\\plugins\\lib.jar").toPath(), StandardCopyOption.REPLACE_EXISTING)
+        Files.copy(new File(buildDir.path + "/libs/lib-" + version + ".jar").toPath(), new File("/home/freeze-dolphin/Documents/workspace/mc-server/paper-1192/plugins/Dumortierite-" + version + ".jar").toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 }
 
