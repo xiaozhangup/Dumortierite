@@ -8,6 +8,4 @@ public class ConsUtils {
 
     public static final ItemStack EMPTY_PLACEHOLDER = new CustomItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE, " ");
 
-    public static final ItemStack DISPLAY = new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " ");
-
 }

@@ -8,3 +8,6 @@ build
 
 **/*lock*
 **/.nrepl-port
+
+assemble
+

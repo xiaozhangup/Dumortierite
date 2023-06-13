@@ -1,17 +1,12 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package io.sn.dumortierite
 
-import groovy.lang.Binding
-import groovy.lang.GroovyShell
+import clojure.java.api.Clojure
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
-import java.io.InputStreamReader
 
-
-@Suppress("unused")
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class DumoCore : JavaPlugin(), DumoSlimefunAddon {
 
     override fun getJavaPlugin(): JavaPlugin {
@@ -34,6 +29,8 @@ class DumoCore : JavaPlugin(), DumoSlimefunAddon {
     override fun onEnable() {
         plug = this
 
+        Thread.currentThread().contextClassLoader = this.classLoader
+
         setupResource()
         setupSlimefun()
     }
@@ -43,15 +40,8 @@ class DumoCore : JavaPlugin(), DumoSlimefunAddon {
     }
 
     private fun setupSlimefun() {
-        with(
-            GroovyShell(this.classLoader, Binding().apply {
-                setProperty("core", plug)
-            })
-        ) {
-            @Suppress("UNCHECKED_CAST")
-            itemStackRegistry =
-                evaluate(getResource("setup.groovy")?.let { InputStreamReader(it) }) as ArrayList<ItemStack>
-        }
+        Clojure.`var`("clojure.core", "require").invoke(Clojure.read("io.sn.dumortierite.clj_module.setup"))
+        Clojure.`var`("io.sn.dumortierite.clj_module.setup", "init").invoke(this)
     }
 
 

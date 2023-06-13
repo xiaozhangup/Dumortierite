@@ -27,7 +27,7 @@ dependencies {
 
     implementation 'net.kyori:adventure-text-minimessage:4.13.1'
 
-    implementation 'org.codehaus.groovy:groovy-jsr223:3.0.17'
+    implementation 'org.clojure:clojure:1.11.1'
 }
 
 java {
@@ -41,9 +41,10 @@ tasks.named('test') {
 }
 
 tasks.register('dest') {
+    def destTarget = '/home/freeze-dolphin/Documents/workspace/mc-server/paper-1192/plugins/'
     doLast {
-        Files.copy(new File(buildDir.path + "/libs/lib-" + version + ".jar").toPath(), new File("/home/freeze-dolphin/Documents/workspace/mc-server/paper-1192/plugins/Dumortierite-" + version + ".jar").toPath(), StandardCopyOption.REPLACE_EXISTING)
+        Files.copy(new File(buildDir.path + '/libs/Dumortierite-' + version + '.jar').toPath(), new File(destTarget + 'Dumortierite-' + version + '.jar').toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 }
 
-tasks.dest.dependsOn('build')
+tasks.dest.dependsOn('shadowJar')

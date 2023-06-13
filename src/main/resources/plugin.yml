@@ -5,7 +5,8 @@ description: A Slimefun4 addon that add some useful gadgets.
 website: https://github.com/freeze-dolphin/Dumortierite
 
 main: io.sn.dumortierite.DumoCore
-depend: [Slimefun]
+depend:
+  - Slimefun
 
 softdepend:
   - ItemsAdder
@@ -13,6 +14,6 @@ softdepend:
 api-version: 1.19
 
 libraries:
+  - org.clojure:clojure:1.11.1
   - org.jetbrains.kotlin:kotlin-stdlib:1.7.10
   - net.kyori:adventure-text-minimessage:4.13.1
-  - org.codehaus.groovy:groovy-jsr223:3.0.17
