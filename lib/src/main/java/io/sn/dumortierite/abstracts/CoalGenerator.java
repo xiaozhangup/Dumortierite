@@ -53,7 +53,7 @@ public abstract class CoalGenerator extends AGenerator {
 
         processor.setProgressBar(getProgressBar());
 
-        new BlockMenuPreset(item.getItemId(), getInventoryTitle()) {
+        new BlockMenuPreset(item.getItemId(), getInventoryTitle(), "dumortierite:coal_generator") {
 
             @Override
             public void init() {

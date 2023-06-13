@@ -1,0 +1,13 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "dumortierite:gui/coal_generator.png",
+      "height": 37,
+      "ascent": 37,
+      "chars": [
+        "A"
+      ]
+    }
+  ]
+}
