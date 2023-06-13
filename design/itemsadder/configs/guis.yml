@@ -1,7 +1,11 @@
 info:
   namespace: dumortierite
 font_images:
+  blank:
+    path: gui/blank
+    suggest_in_command: false
+    y_position: 0
   coal_generator:
     path: gui/coal_generator
     suggest_in_command: false
-    y_position: 47
+    y_position: 13

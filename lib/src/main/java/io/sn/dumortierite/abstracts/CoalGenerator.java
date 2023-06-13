@@ -12,6 +12,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.sn.dumortierite.utils.ConsUtils;
+import io.sn.slimefun4.ChestMenuTexture;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
@@ -34,9 +35,9 @@ import java.util.Map;
 @SuppressWarnings("deprecation")
 public abstract class CoalGenerator extends AGenerator {
 
-    private static final int[] BORDER = {0, 4, 8, 9, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 31, 35, 36, 40, 44};
+    private static final int[] BORDER = {0, 4, 8, 9, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 31, 35, 36, 40, 44, 45, 46, 47, 47, 48, 49, 50, 51, 52, 53};
 
-    private static final int[] DISPLAY = {5, 6, 7, 14, 15, 16};
+    private static final int[] SLOT_CIRCUIT_DISPLAY = {5, 6, 7, 14, 15, 16};
 
     private static final int[] SLOT_IN = {1, 2, 3, 10, 11, 12};
     private static final int[] SLOT_OUT = {28, 29, 30, 37, 38, 39};
@@ -53,8 +54,7 @@ public abstract class CoalGenerator extends AGenerator {
 
         processor.setProgressBar(getProgressBar());
 
-        new BlockMenuPreset(item.getItemId(), getInventoryTitle(), "dumortierite:coal_generator") {
-
+        new BlockMenuPreset(item.getItemId(), getInventoryTitle(), new ChestMenuTexture("dumortierite", "coal_generator")) {
             @Override
             public void init() {
                 constructMenu(this);
@@ -88,8 +88,8 @@ public abstract class CoalGenerator extends AGenerator {
         for (int i : BORDER) {
             preset.addItem(i, ConsUtils.EMPTY_PLACEHOLDER, ChestMenuUtils.getEmptyClickHandler());
         }
-        for (int i : DISPLAY) {
-            preset.addItem(i, ConsUtils.DISPLAY, ChestMenuUtils.getEmptyClickHandler());
+        for (int i : SLOT_CIRCUIT_DISPLAY) {
+            preset.addItem(i, ConsUtils.EMPTY_PLACEHOLDER, ChestMenuUtils.getEmptyClickHandler());
         }
         preset.addMenuClickHandler(SLOT_CIRCUIT, (p, slot, item, action) -> {
             return false; //TODO replace with circuit judgement!
@@ -115,7 +115,7 @@ public abstract class CoalGenerator extends AGenerator {
     }
 
     @Override
-    public int getGeneratedOutput(Location l, SlimefunBlockData data) {
+    public int getGeneratedOutput(@NotNull Location l, @NotNull SlimefunBlockData data) {
         BlockMenu inv = StorageCacheUtils.getMenu(l);
         FuelOperation operation = processor.getOperation(l);
 
@@ -145,7 +145,7 @@ public abstract class CoalGenerator extends AGenerator {
                     inv.pushItem(new ItemStack(Material.BUCKET), getOutputSlots());
                 }
 
-                inv.replaceExistingItem(SLOT_INDICATOR, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "));
+                inv.replaceExistingItem(SLOT_INDICATOR, new CustomItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE, " "));
 
                 processor.endOperation(l);
                 return 0;

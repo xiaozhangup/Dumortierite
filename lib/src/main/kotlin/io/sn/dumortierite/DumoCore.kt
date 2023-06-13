@@ -6,8 +6,9 @@ import groovy.lang.Binding
 import groovy.lang.GroovyShell
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.configuration.file.FileConfiguration
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
-import java.io.File
+import java.io.InputStreamReader
 
 
 @Suppress("unused")
@@ -22,17 +23,16 @@ class DumoCore : JavaPlugin(), DumoSlimefunAddon {
     }
 
     lateinit var plug: DumoCore
-    lateinit var setupScriptFile: File
 
     companion object {
         var plug: DumoCore = DumoCore.plug
         var minimsg: MiniMessage = MiniMessage.miniMessage()
         var config: FileConfiguration = DumoCore.config
+        lateinit var itemStackRegistry: ArrayList<ItemStack>
     }
 
     override fun onEnable() {
         plug = this
-        setupScriptFile = File("${dataFolder.path}${File.separator}setup.groovy")
 
         setupResource()
         setupSlimefun()
@@ -40,20 +40,17 @@ class DumoCore : JavaPlugin(), DumoSlimefunAddon {
 
     private fun setupResource() {
         saveConfig()
-        if (!setupScriptFile.exists()) saveResource("setup.groovy", false)
     }
 
     private fun setupSlimefun() {
-        try {
-            with(
-                GroovyShell(this.classLoader, Binding().apply {
-                    setProperty("core", plug)
-                })
-            ) {
-                evaluate(setupScriptFile)
-            }
-        } catch (e: Exception) {
-            Exception("Unexcepted error occurred while loading 'setup.groovy'!\n${e.message}").printStackTrace()
+        with(
+            GroovyShell(this.classLoader, Binding().apply {
+                setProperty("core", plug)
+            })
+        ) {
+            @Suppress("UNCHECKED_CAST")
+            itemStackRegistry =
+                evaluate(getResource("setup.groovy")?.let { InputStreamReader(it) }) as ArrayList<ItemStack>
         }
     }
 

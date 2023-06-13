@@ -7,6 +7,9 @@ website: https://github.com/freeze-dolphin/Dumortierite
 main: io.sn.dumortierite.DumoCore
 depend: [Slimefun]
 
+softdepend:
+  - ItemsAdder
+
 api-version: 1.19
 
 libraries:
