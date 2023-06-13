@@ -10,5 +10,5 @@
                  [com.github.HAPPYLAND-Dev/Slimefun4 "2949d1a1b7"]
                  [org.jetbrains.kotlin/kotlin-stdlib "1.7.10"]]
   :resource-paths ["lib/Dumortierite-0.1.0.jar"]
-  :repl-options {:init-ns io.sn.dumortierite.clj-module.core}
+  :repl-options {:init-ns io.sn.dumortierite.clj-module.setup}
   :aot :all)
