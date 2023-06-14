@@ -8,7 +8,6 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler
 import io.sn.dumortierite.DumoCore
 import io.sn.dumortierite.utils.AbstractProgram
-import io.sn.dumortierite.utils.ProgramRegistry
 import io.sn.dumortierite.utils.ItemUtils.Companion.explainTier
 import org.bukkit.inventory.ItemStack
 
@@ -28,8 +27,8 @@ class Circuit(
     }
 
     override fun preRegister() {
-        setProgram(ProgramRegistry.DEFAULT_PROGRAM)
-        addItemHandler(ItemUseHandler {
+        DumoCore.programRegistry.getProgramById("DEFAULT")?.let { setProgram(it) }
+        addItemHandler(ItemUseHandler { handler ->
             val id = NBT.get(item) {
                 it.getString("program-id")
             }
@@ -37,8 +36,8 @@ class Circuit(
                 it.getInteger("chip-tier")
             }
 
-            it.player.sendMessage(DumoCore.minimsg.deserialize("<white>芯片级别: ${explainTier(tier, "")}"))
-            it.player.sendMessage(
+            handler.player.sendMessage(DumoCore.minimsg.deserialize("<white>芯片级别: ${explainTier(tier, "")}"))
+            handler.player.sendMessage(
                 DumoCore.minimsg.deserialize(
                     "<white>内部程序: ${
                         DumoCore.programRegistry.getProgramById(

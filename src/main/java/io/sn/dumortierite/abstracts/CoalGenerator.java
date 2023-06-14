@@ -12,8 +12,10 @@ import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperatio
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.sn.dumortierite.DumoCore;
-import io.sn.dumortierite.ItemStackRegistry;
-import io.sn.dumortierite.utils.*;
+import io.sn.dumortierite.utils.ProcessorType;
+import io.sn.dumortierite.utils.ProgramLoader;
+import io.sn.dumortierite.utils.SpecificProgramType;
+import io.sn.dumortierite.utils.UIUtils;
 import io.sn.slimefun4.ChestMenuTexture;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -44,31 +46,13 @@ public abstract class CoalGenerator extends AGenerator {
 
     private static final int[] SLOT_IN = {1, 2, 3, 10, 11, 12};
     private static final int[] SLOT_OUT = {28, 29, 30, 37, 38, 39};
-    private static final int[] SLOT_OPTION = {32, 33, 34, 41, 42, 43};
+
+    // private static final int[] SLOT_OPTION = {32, 33, 34, 41, 42, 43};
 
     private static final int SLOT_INDICATOR = 20;
     private static final int SLOT_CIRCUIT = 17;
 
-    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.COAL_GENERATOR}, this) {
-        @Override
-        public void load(@NotNull AbstractProgram program, @NotNull Location l, @NotNull SlimefunBlockData data) {
-            var type = program.getType();
-            switch (type) {
-                case GENERIC_GENERATOR -> {
-                    data.setData("progressive", "1");
-                    break;
-                }
-                case COAL_GENERATOR -> {
-                    data.setData("progressive", "2");
-                    break;
-                }
-                default -> {
-                    data.setData("progressive", "0");
-                    break;
-                }
-            }
-        }
-    };
+    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.COAL_GENERATOR}, this);
 
     private final MachineProcessor<FuelOperation> processor = new MachineProcessor<>(this);
 
@@ -115,9 +99,7 @@ public abstract class CoalGenerator extends AGenerator {
         for (int i : SLOT_CIRCUIT_DISPLAY) {
             preset.addItem(i, UIUtils.UI_BACKGROUND, ChestMenuUtils.getEmptyClickHandler());
         }
-        preset.addMenuClickHandler(SLOT_CIRCUIT, (p, slot, item, action) -> {
-            return true; // circuit allowed
-        });
+        preset.addMenuClickHandler(SLOT_CIRCUIT, (p, slot, item, action) -> true);
 
         for (int i : getOutputSlots()) {
             preset.addMenuClickHandler(i, new ChestMenu.AdvancedMenuClickHandler() {
@@ -151,14 +133,15 @@ public abstract class CoalGenerator extends AGenerator {
         }
 
         // circuit judgement!
-        if (ItemStackRegistry.Companion.getItemStackRegistry().contains(itemInSlot)) {
-            var tier = NBT.get(itemInSlot, nbt -> nbt.getInteger("chip-tier"));
+        if (DumoCore.Companion.getItemStackRegistry().getChipsItemStack().contains(itemInSlot)) {
+            // var tier = NBT.get(itemInSlot, nbt -> nbt.getInteger("chip-tier"));
             var program = NBT.get(itemInSlot, nbt -> nbt.getString("program-id"));
-            programLoader.preLoad(Objects.requireNonNull(DumoCore.Companion.getProgramRegistry().getProgramById(program)),
-                    l, data);
+            programLoader.preLoad(Objects.requireNonNull(DumoCore.Companion.getProgramRegistry().getProgramById(program)), l, data);
         } else {
             return 0;
         }
+
+        var progressive = Integer.parseInt(Objects.requireNonNull(data.getData("progressive")));
 
         if (operation != null) {
             if (!operation.isFinished()) {
@@ -168,7 +151,7 @@ public abstract class CoalGenerator extends AGenerator {
                     int charge = getCharge(l, data);
 
                     if (getCapacity() - charge >= getEnergyProduction()) {
-                        operation.addProgress(Integer.parseInt(Objects.requireNonNull(data.getData("progressive"))));
+                        operation.addProgress(progressive);
                         return getEnergyProduction();
                     }
 

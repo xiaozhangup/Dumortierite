@@ -3,6 +3,7 @@ import java.nio.file.StandardCopyOption
 
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'dev.clojurephant.clojure' version '0.7.0'
     id 'java-library'
 }
 
@@ -31,13 +32,28 @@ dependencies {
 
     implementation 'org.apache.groovy:groovy-jsr223:4.0.12'
     implementation 'org.abcl:abcl:1.9.1'
-
+    implementation 'org.clojure:clojure:1.11.1'
 }
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+clojure.builds.configure {
+    main {
+        classpath.from = sourceSets.main.compileClasspath
+        aotAll()
+    }
+}
+
+tasks.named('compileJava') {
+    classpath += files(sourceSets.main.clojure.classesDirectory)
+}
+
+tasks.named('compileKotlin') {
+    classpath += files(sourceSets.main.clojure.classesDirectory)
 }
 
 tasks.named('test') {

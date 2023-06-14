@@ -2,9 +2,8 @@ package io.sn.dumortierite.utils
 
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem
-import io.sn.dumortierite.DumoCore
+import org.bukkit.ChatColor
 import org.bukkit.Location
-import org.jetbrains.annotations.NotNull
 
 enum class ProcessorType {
     GENERATOR, MACHINE
@@ -15,20 +14,27 @@ enum class SpecificProgramType {
 }
 
 
-abstract class AbstractProgram(val type: SpecificProgramType, val id: String, val displayName: String) {
+abstract class AbstractProgram(
+    val type: SpecificProgramType,
+    private val name: String,
+    val leastChipTier: Int,
+) {
+    val displayName: String
+        get() = ChatColor.translateAlternateColorCodes('&', this.type.name)
 
-    init {
-        @Suppress("LeakingThis")
-        DumoCore.programRegistry.registerProgram(this)
-    }
+    val id: String = type.name
 
-    abstract fun load(type: SpecificProgramType)
+    abstract fun load(
+        program: AbstractProgram,
+        l: Location,
+        data: SlimefunBlockData
+    )
 }
 
 class IncompatibleProgramTypeException(type: SpecificProgramType, sfItem: SlimefunItem) :
-    Exception(message = "Unsupported program type (${type}) for ${sfItem.id}")
+    Exception("Unsupported program type (${type}) for ${sfItem.id}")
 
-abstract class ProgramLoader(
+class ProgramLoader(
     private val processorType: ProcessorType,
     private val allowedType: Array<out SpecificProgramType>,
     private val sfItem: SlimefunItem,
@@ -40,7 +46,7 @@ abstract class ProgramLoader(
         when (processorType) {
             ProcessorType.GENERATOR -> {
                 if (allowedType.contains(program.type) || program.type == SpecificProgramType.GENERIC_GENERATOR) {
-                    load(program, l, data)
+                    program.load(program, l, data)
                 } else {
                     throw IncompatibleProgramTypeException(program.type, sfItem)
                 }
@@ -48,14 +54,11 @@ abstract class ProgramLoader(
 
             ProcessorType.MACHINE -> {
                 if (allowedType.contains(program.type) || program.type == SpecificProgramType.GENERIC_MACHINE) {
-                    load(program, l, data)
+                    program.load(program, l, data)
                 } else {
                     throw IncompatibleProgramTypeException(program.type, sfItem)
                 }
             }
         }
     }
-
-    abstract fun load(program: AbstractProgram, l: Location, data: SlimefunBlockData)
-
 }
