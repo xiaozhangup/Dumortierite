@@ -7,6 +7,7 @@ website: https://github.com/freeze-dolphin/Dumortierite
 main: io.sn.dumortierite.DumoCore
 depend:
   - Slimefun
+  - NBTAPI
 
 softdepend:
   - ItemsAdder
@@ -14,6 +15,7 @@ softdepend:
 api-version: 1.19
 
 libraries:
-  - org.clojure:clojure:1.11.1
   - org.jetbrains.kotlin:kotlin-stdlib:1.7.10
   - net.kyori:adventure-text-minimessage:4.13.1
+  - org.apache.groovy:groovy-jsr223:4.0.12
+  - org.abcl:abcl:1.9.1

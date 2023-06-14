@@ -13,6 +13,7 @@ import io.github.thebusybiscuit.slimefun4.utils.LoreBuilder
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils
 import io.sn.dumortierite.DumoCore
 import io.sn.dumortierite.abstracts.CoalGenerator
+import io.sn.dumortierite.objects.Circuit
 import io.sn.dumortierite.utils.ItemUtils
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel
 import org.bukkit.Material
@@ -28,32 +29,39 @@ def type = RecipeType.NULL
 
 def group = new ItemGroup(new NamespacedKey(plug, "dumortierite"),
         new CustomItemStack(SlimefunUtils.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWZhYzhhMGMxM2E1YTM2NzQ3NjBhOGY1ZTNkMWEyMzQwYWRlYmJjMWE1ODY1M2JlZTk1NjgzMjRhMWViMzNjYSJ9fX0="),
-                "&9Dumortierite&f"), 4)
+                "&9蓝线石 : Dumortierite Craft&f"), 4)
+
+def ICIRCUIT_GENERIC = new CustomItemStack(Material.PAPER, "&f芯片")
+
+def ICIRCUIT_BASIC = new SlimefunItemStack("DUMO_CIRCUIT_BASIC", ItemUtils.withTier(ICIRCUIT_GENERIC, 1))
+def ICIRCUIT_NORMAL = new SlimefunItemStack("DUMO_CIRCUIT_NORMAL", ItemUtils.withTier(ICIRCUIT_GENERIC, 2))
+def ICIRCUIT_ADVANCED = new SlimefunItemStack("DUMO_CIRCUIT_ADVANCED", ItemUtils.withTier(ICIRCUIT_GENERIC, 3))
+def ICIRCUIT_ENHANCED = new SlimefunItemStack("DUMO_CIRCUIT_ENHANCED", ItemUtils.withTier(ICIRCUIT_GENERIC, 4))
+def ICIRCUIT_ULTIMATE = new SlimefunItemStack("DUMO_CIRCUIT_ULTIMATE", ItemUtils.withTier(ICIRCUIT_GENERIC, 5))
+def ICIRCUIT_END = new SlimefunItemStack("DUMO_CIRCUIT_END", ItemUtils.withTier(ICIRCUIT_GENERIC, 6))
+
+def ICOAL_GENERATOR_GENERIC = new CustomItemStack(HeadTexture.GENERATOR.asItemStack, "&c煤发电机")
 
 def ICOAL_GENERATOR_1 = new SlimefunItemStack("DUMO_COAL_GENERATOR_1",
-        HeadTexture.GENERATOR,
-        "&c煤发电机 &7- &fMk.&eI&r", "",
+        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 1), "",
         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
         LoreBuilder.powerBuffer(64),
         LoreBuilder.powerPerSecond(16))
 
 def ICOAL_GENERATOR_2 = new SlimefunItemStack("DUMO_COAL_GENERATOR_2",
-        HeadTexture.GENERATOR,
-        "&c煤发电机 &7- &fMk.&eII&r", "",
+        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 2), "",
         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
         LoreBuilder.powerBuffer(128),
         LoreBuilder.powerPerSecond(32))
 
 def ICOAL_GENERATOR_3 = new SlimefunItemStack("DUMO_COAL_GENERATOR_3",
-        HeadTexture.GENERATOR,
-        "&c煤发电机 &7- &fMk.&eIII&r", "",
+        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 3), "",
         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
         LoreBuilder.powerBuffer(256),
         LoreBuilder.powerPerSecond(64))
 
 def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
-        HeadTexture.GENERATOR,
-        "&c煤发电机 &7- &fMk.&eIV&r", "",
+        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 4), "",
         "&f使用先进的催化剂加快燃料燃烧速度", "",
         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
         LoreBuilder.powerBuffer(512),
@@ -68,6 +76,13 @@ def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
     | |\/| || |(_-// _|/ -_)| || |/ _` || ' \ / -_)/ _ \| || |(_-/
     |_|  |_||_|/__/\__|\___||_||_|\__/_||_||_|\___|\___/ \_._|/__/
  */
+
+(new Circuit(group, ICIRCUIT_BASIC, type, nullRecipe, 1).register(plug))
+(new Circuit(group, ICIRCUIT_NORMAL, type, nullRecipe, 2).register(plug))
+(new Circuit(group, ICIRCUIT_ADVANCED, type, nullRecipe, 3).register(plug))
+(new Circuit(group, ICIRCUIT_ENHANCED, type, nullRecipe, 4).register(plug))
+(new Circuit(group, ICIRCUIT_ULTIMATE, type, nullRecipe, 5).register(plug))
+(new Circuit(group, ICIRCUIT_END, type, nullRecipe, 6).register(plug))
 
 // MISCELLANEOUS REGISTER END
 
@@ -165,5 +180,5 @@ def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
  */
 // throw back registry to DumoCore.kt
 return [
-
-] as ArrayList<ItemStack>
+        ICIRCUIT_BASIC, ICIRCUIT_NORMAL, ICIRCUIT_ADVANCED, ICIRCUIT_ENHANCED, ICIRCUIT_END
+]

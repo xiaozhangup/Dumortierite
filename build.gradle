@@ -13,6 +13,7 @@ repositories {
     mavenCentral()
     maven { url = 'https://jitpack.io/' }
     maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+    maven { url = 'https://repo.codemc.io/repository/maven-public/' }
 }
 
 dependencies {
@@ -22,12 +23,15 @@ dependencies {
     //noinspection VulnerableLibrariesLocal
     implementation 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
 
-    implementation 'com.github.HAPPYLAND-Dev:Slimefun4:2949d1a1b7'
+    implementation 'com.github.HAPPYLAND-Dev:Slimefun4:bdf73b8fae'
     implementation 'com.github.LoneDev6:API-ItemsAdder:3.4.1-r4'
+    implementation 'de.tr7zw:item-nbt-api-plugin:2.11.3'
 
     implementation 'net.kyori:adventure-text-minimessage:4.13.1'
 
-    implementation 'org.clojure:clojure:1.11.1'
+    implementation 'org.apache.groovy:groovy-jsr223:4.0.12'
+    implementation 'org.abcl:abcl:1.9.1'
+
 }
 
 java {
@@ -40,11 +44,11 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+def destTarget = '/home/freeze-dolphin/Documents/workspace/mc-server/paper-1192/plugins/'
 tasks.register('dest') {
-    def destTarget = '/home/freeze-dolphin/Documents/workspace/mc-server/paper-1192/plugins/'
     doLast {
         Files.copy(new File(buildDir.path + '/libs/Dumortierite-' + version + '.jar').toPath(), new File(destTarget + 'Dumortierite-' + version + '.jar').toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 }
 
-tasks.dest.dependsOn('shadowJar')
+tasks.dest.dependsOn('build')

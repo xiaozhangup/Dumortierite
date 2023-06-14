@@ -8,4 +8,4 @@ font_images:
   coal_generator:
     path: gui/coal_generator
     suggest_in_command: false
-    y_position: 13
+    y_position: 12

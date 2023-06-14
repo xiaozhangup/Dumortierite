@@ -2,16 +2,18 @@ package io.sn.dumortierite.abstracts;
 
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import de.tr7zw.nbtapi.NBT;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperation;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import io.sn.dumortierite.utils.ConsUtils;
+import io.sn.dumortierite.DumoCore;
+import io.sn.dumortierite.ItemStackRegistry;
+import io.sn.dumortierite.utils.*;
 import io.sn.slimefun4.ChestMenuTexture;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -31,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @SuppressWarnings("deprecation")
 public abstract class CoalGenerator extends AGenerator {
@@ -46,6 +49,27 @@ public abstract class CoalGenerator extends AGenerator {
     private static final int SLOT_INDICATOR = 20;
     private static final int SLOT_CIRCUIT = 17;
 
+    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.COAL_GENERATOR}, this) {
+        @Override
+        public void load(@NotNull AbstractProgram program, @NotNull Location l, @NotNull SlimefunBlockData data) {
+            var type = program.getType();
+            switch (type) {
+                case GENERIC_GENERATOR -> {
+                    data.setData("progressive", "1");
+                    break;
+                }
+                case COAL_GENERATOR -> {
+                    data.setData("progressive", "2");
+                    break;
+                }
+                default -> {
+                    data.setData("progressive", "0");
+                    break;
+                }
+            }
+        }
+    };
+
     private final MachineProcessor<FuelOperation> processor = new MachineProcessor<>(this);
 
     @ParametersAreNonnullByDefault
@@ -54,7 +78,7 @@ public abstract class CoalGenerator extends AGenerator {
 
         processor.setProgressBar(getProgressBar());
 
-        new BlockMenuPreset(item.getItemId(), getInventoryTitle(), new ChestMenuTexture("dumortierite", "coal_generator")) {
+        new BlockMenuPreset(item.getItemId(), getInventoryTitle(), 54, new ChestMenuTexture("dumortierite", "coal_generator")) {
             @Override
             public void init() {
                 constructMenu(this);
@@ -86,13 +110,13 @@ public abstract class CoalGenerator extends AGenerator {
 
     private void constructMenu(BlockMenuPreset preset) {
         for (int i : BORDER) {
-            preset.addItem(i, ConsUtils.EMPTY_PLACEHOLDER, ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, UIUtils.UI_BACKGROUND, ChestMenuUtils.getEmptyClickHandler());
         }
         for (int i : SLOT_CIRCUIT_DISPLAY) {
-            preset.addItem(i, ConsUtils.EMPTY_PLACEHOLDER, ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, UIUtils.UI_BACKGROUND, ChestMenuUtils.getEmptyClickHandler());
         }
         preset.addMenuClickHandler(SLOT_CIRCUIT, (p, slot, item, action) -> {
-            return false; //TODO replace with circuit judgement!
+            return true; // circuit allowed
         });
 
         for (int i : getOutputSlots()) {
@@ -110,7 +134,7 @@ public abstract class CoalGenerator extends AGenerator {
             });
         }
 
-        preset.addItem(SLOT_INDICATOR, new CustomItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(SLOT_INDICATOR, UIUtils.UI_BACKGROUND);
 
     }
 
@@ -121,6 +145,21 @@ public abstract class CoalGenerator extends AGenerator {
 
         if (inv == null) return 0;
 
+        var itemInSlot = inv.getItemInSlot(SLOT_CIRCUIT);
+        if (inv.getItemInSlot(SLOT_CIRCUIT) == null) {
+            return 0;
+        }
+
+        // circuit judgement!
+        if (ItemStackRegistry.Companion.getItemStackRegistry().contains(itemInSlot)) {
+            var tier = NBT.get(itemInSlot, nbt -> nbt.getInteger("chip-tier"));
+            var program = NBT.get(itemInSlot, nbt -> nbt.getString("program-id"));
+            programLoader.preLoad(Objects.requireNonNull(DumoCore.Companion.getProgramRegistry().getProgramById(program)),
+                    l, data);
+        } else {
+            return 0;
+        }
+
         if (operation != null) {
             if (!operation.isFinished()) {
                 processor.updateProgressBar(inv, SLOT_INDICATOR, operation);
@@ -129,7 +168,7 @@ public abstract class CoalGenerator extends AGenerator {
                     int charge = getCharge(l, data);
 
                     if (getCapacity() - charge >= getEnergyProduction()) {
-                        operation.addProgress(1);
+                        operation.addProgress(Integer.parseInt(Objects.requireNonNull(data.getData("progressive"))));
                         return getEnergyProduction();
                     }
 
@@ -145,7 +184,7 @@ public abstract class CoalGenerator extends AGenerator {
                     inv.pushItem(new ItemStack(Material.BUCKET), getOutputSlots());
                 }
 
-                inv.replaceExistingItem(SLOT_INDICATOR, new CustomItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE, " "));
+                inv.replaceExistingItem(SLOT_INDICATOR, UIUtils.UI_BACKGROUND);
 
                 processor.endOperation(l);
                 return 0;
