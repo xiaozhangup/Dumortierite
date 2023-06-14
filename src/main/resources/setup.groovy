@@ -43,29 +43,34 @@ def ICIRCUIT_END = new SlimefunItemStack("DUMO_CIRCUIT_END", ItemUtils.withTier(
 def ICOAL_GENERATOR_GENERIC = new CustomItemStack(HeadTexture.GENERATOR.asItemStack, "&c煤发电机")
 
 def ICOAL_GENERATOR_1 = new SlimefunItemStack("DUMO_COAL_GENERATOR_1",
-        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 1), "",
-        LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
-        LoreBuilder.powerBuffer(64),
-        LoreBuilder.powerPerSecond(16))
+        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 1),
+        ["",
+         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
+         LoreBuilder.powerBuffer(64),
+         LoreBuilder.powerPerSecond(16)])
 
 def ICOAL_GENERATOR_2 = new SlimefunItemStack("DUMO_COAL_GENERATOR_2",
-        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 2), "",
-        LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
-        LoreBuilder.powerBuffer(128),
-        LoreBuilder.powerPerSecond(32))
+        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 2),
+        ["",
+         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
+         LoreBuilder.powerBuffer(128),
+         LoreBuilder.powerPerSecond(32)])
 
 def ICOAL_GENERATOR_3 = new SlimefunItemStack("DUMO_COAL_GENERATOR_3",
-        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 3), "",
-        LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
-        LoreBuilder.powerBuffer(256),
-        LoreBuilder.powerPerSecond(64))
+        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 3),
+        ["",
+         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
+         LoreBuilder.powerBuffer(256),
+         LoreBuilder.powerPerSecond(64)])
 
 def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
-        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 4), "",
-        "&f使用先进的催化剂加快燃料燃烧速度", "",
-        LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
-        LoreBuilder.powerBuffer(512),
-        LoreBuilder.powerPerSecond(128))
+        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 4),
+        ["",
+         "&f使用先进的催化剂加快燃料燃烧速度",
+         "",
+         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
+         LoreBuilder.powerBuffer(512),
+         LoreBuilder.powerPerSecond(128)])
 
 /*
   --- Miscellaneous ---

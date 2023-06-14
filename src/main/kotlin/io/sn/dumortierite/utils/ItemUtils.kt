@@ -1,5 +1,6 @@
 package io.sn.dumortierite.utils
 
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack
 import io.sn.dumortierite.DumoCore
 import net.kyori.adventure.text.Component
 import org.bukkit.enchantments.Enchantment
@@ -11,18 +12,19 @@ class ItemUtils {
     companion object {
         @JvmStatic
         fun ItemStack.glow(): ItemStack {
-            setItemMeta(itemMeta.apply {
+            itemMeta = itemMeta.apply {
                 addEnchant(Enchantment.OXYGEN, 1, true)
                 addItemFlags(ItemFlag.HIDE_ENCHANTS)
-            })
+            }
             return this
         }
 
         @JvmStatic
-        fun ItemStack.withTier(tier: Int) {
+        fun ItemStack.withTier(tier: Int): ItemStack {
             itemMeta = itemMeta.apply {
                 displayName(itemMeta.displayName()?.append(explainTier(tier, "<gray> - ")))
             }
+            return this
         }
 
         @JvmStatic
