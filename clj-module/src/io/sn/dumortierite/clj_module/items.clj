@@ -10,8 +10,20 @@
 
 (set! *warn-on-reflection* true)
 
-(defn lore-machine [^MachineTier tier ^MachineType type]
-  (LoreBuilder/machine tier type))
+(defn machine-type [k]
+  (k {:machine   MachineType/MACHINE
+      :generator MachineType/GENERATOR}))
+
+(defn machine-tier [k]
+  (k {:basic    MachineTier/BASIC
+      :average  MachineTier/AVERAGE
+      :medium   MachineTier/MEDIUM
+      :good     MachineTier/GOOD
+      :advanced MachineTier/ADVANCED
+      :end-game MachineTier/END_GAME}))
+
+(defn lore-machine [tier type]
+  (LoreBuilder/machine (machine-tier tier) (machine-type type)))
 
 (defn lore-power-buf [buf]
   (LoreBuilder/powerBuffer buf))
@@ -34,18 +46,42 @@
 (def ^{:dynamic true
        :tag     ItemStack} generic)
 
-(defn construct-tiered-machine [^String name-in-uppercase tier ^List lore]
+(def ^{:dynamic true
+       :tag     String} name-in-uppercase)
+
+(defn construct-tiered-item [tier ^List lore]
   (let [key-name (-> name-in-uppercase .toLowerCase (.replaceAll "_" "-"))
         lore (ClojureUtils/consToList (cons "" lore))]
     {(keyword (str key-name "-" tier))
      (SlimefunItemStack. (str "DUMO_" name-in-uppercase "_" tier)
                          (with-tier generic tier) lore)}))
 
-(defn fetch-items []
+(defn fetch-items [id]
   (let [empty-lore (ClojureUtils/listToArr [])
         circuit-generic (CustomItemStack. Material/PAPER ["&f芯片"])
         coal-generator-generic (CustomItemStack. (head-texture :generator) "&c煤发电机" empty-lore)]
-    (reduce merge [(binding [generic coal-generator-generic]
-                     (construct-tiered-machine "COAL_GENERATOR" 1 [(lore-machine MachineTier/AVERAGE MachineType/GENERATOR)
-                                                                   (lore-power-buf 64)
-                                                                   (lore-power-per-sec 16)]))])))
+    (id (reduce merge [
+                       ; Circuit
+                       (binding [name-in-uppercase "CIRCUIT"
+                                 generic circuit-generic]
+                         (doseq [level (range 1 7)] (construct-tiered-item level []))
+                         )
+
+                       ; Coal Generator
+                       (binding [name-in-uppercase "COAL_GENERATOR"
+                                 generic coal-generator-generic]
+                         (construct-tiered-item 1 [(lore-machine (machine-tier :average) (machine-type :generator))
+                                                   (lore-power-buf 64)
+                                                   (lore-power-per-sec 8)])
+                         (construct-tiered-item 2 [(lore-machine (machine-tier :medium) (machine-type :generator))
+                                                   (lore-power-buf 96)
+                                                   (lore-power-per-sec 10)])
+                         (construct-tiered-item 3 [(lore-machine (machine-tier :good) (machine-type :generator))
+                                                   (lore-power-buf 128)
+                                                   (lore-power-per-sec 12)])
+                         (construct-tiered-item 4 ["&f使用先进的催化剂加快燃料燃烧速度",, ""
+                                                   (lore-machine (machine-tier :advanced) (machine-type :generator))
+                                                   (lore-power-buf 256)
+                                                   (lore-power-per-sec 18)])
+                         )
+                       ]))))

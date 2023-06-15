@@ -1,7 +1,7 @@
 (ns io.sn.dumortierite.clj_module.setup
   (:require [io.sn.dumortierite.clj_module.items :as items]
             [io.sn.dumortierite.clj_module.defaults :as defaults])
-  (:import (io.github.thebusybiscuit.slimefun4.api.items ItemGroup SlimefunItemStack)
+  (:import (io.github.thebusybiscuit.slimefun4.api.items ItemGroup SlimefunItem SlimefunItemStack)
            (io.github.thebusybiscuit.slimefun4.api.recipes RecipeType)
            (io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators CoalGenerator)
            (io.github.thebusybiscuit.slimefun4.libraries.dough.items CustomItemStack)
@@ -36,7 +36,10 @@
 (defmacro default-options [^SlimefunItemStack item]
   `[group ~item defa-type defa-recipe])
 
-(defmacro gen-sf-item [^String base item & more]
+(def ^{:dynamic true
+       :tag     String} base)
+
+(defmacro gen-abs-sf-item [item & more]
   `(proxy [~(symbol base)] [group ~item defa-type defa-recipe] ~@more))
 
 (defn setup [^DumoCore instance]
@@ -47,8 +50,31 @@
             group (ItemGroup. (NamespacedKey. instance "dumortierite") (CustomItemStack.
                                                                          (SlimefunUtils/getCustomHead "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWZhYzhhMGMxM2E1YTM2NzQ3NjBhOGY1ZTNkMWEyMzQwYWRlYmJjMWE1ODY1M2JlZTk1NjgzMjRhMWViMzNjYSJ9fX0=")
                                                                          ["蓝线石 : Dumortierite Craft&f"]) 4)]
-    (register (gen-sf-item "CoalGenerator" (:coal-generator-1 (items/fetch-items))
-                           (getProgressBar [] (ItemStack. Material/FLINT_AND_STEEL))
-                           (registerDefaultFuelTypes [] (gen-fuel (defaults/fuel-list :coal-generator))))
-              {:capacity 64 :production 8})))
+    ; Circuit
+    (binding [base "Circuit"]
+      (doseq [level (range 1 7)]
+        (register (SlimefunItem. group (items/fetch-items :circuit-1) defa-type defa-recipe))))
 
+    ; Coal Generator
+    (binding [base "CoalGenerator"]
+      (doseq [each (partition 2 (interleave
+                                  [(gen-abs-sf-item (items/fetch-items :coal-generator-1)
+                                                    (getProgressBar [] (ItemStack. Material/FLINT_AND_STEEL))
+                                                    (registerDefaultFuelTypes [] (gen-fuel (defaults/fuel-list :coal-generator))))
+                                   (gen-abs-sf-item (items/fetch-items :coal-generator-2)
+                                                    (getProgressBar [] (ItemStack. Material/FLINT_AND_STEEL))
+                                                    (registerDefaultFuelTypes [] (gen-fuel (defaults/fuel-list :coal-generator))))
+                                   (gen-abs-sf-item (items/fetch-items :coal-generator-3)
+                                                    (getProgressBar [] (ItemStack. Material/FLINT_AND_STEEL))
+                                                    (registerDefaultFuelTypes [] (gen-fuel (defaults/fuel-list :coal-generator))))
+                                   (gen-abs-sf-item (items/fetch-items :coal-generator-4)
+                                                    (getProgressBar [] (ItemStack. Material/FLINT_AND_STEEL))
+                                                    (registerDefaultFuelTypes [] (gen-fuel (defaults/fuel-list :coal-generator-adv))))
+                                   ]
+                                  [{:capacity 64 :production 8}
+                                   {:capacity 96 :production 10}
+                                   {:capacity 128 :production 12}
+                                   {:capacity 256 :production 18}
+                                   ]))]
+        (register (first each) (second each)))
+      )))
