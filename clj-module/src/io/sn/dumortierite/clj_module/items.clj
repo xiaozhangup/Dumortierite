@@ -1,32 +1,51 @@
-(ns io.sn.dumortierite.clj-module.items
+(ns io.sn.dumortierite.clj_module.items
   (:import (io.github.thebusybiscuit.slimefun4.api.items SlimefunItemStack)
            (io.github.thebusybiscuit.slimefun4.core.attributes MachineTier MachineType)
            (io.github.thebusybiscuit.slimefun4.libraries.dough.items CustomItemStack)
-           (io.github.thebusybiscuit.slimefun4.utils HeadTexture LoreBuilder)
-           (io.sn.dumortierite.utils ClojureUtils ItemUtils)
+           (io.github.thebusybiscuit.slimefun4.utils LoreBuilder SlimefunUtils)
+           (io.sn.dumortierite.utils ClojureUtils ItemEffectUtils)
+           (java.util List)
+           (org.bukkit Material)
            (org.bukkit.inventory ItemStack)))
 
 (set! *warn-on-reflection* true)
 
-(comment
-  (defmacro defitem [^String id ^ItemStack item ^String name & lore]
-    `(def ^{:static true
-            :tag    SlimefunItemStack} ~(symbol id)
-       (SlimefunItemStack. ~id ~item ~name (into-array String [~@lore]))))
+(defn lore-machine [^MachineTier tier ^MachineType type]
+  (LoreBuilder/machine tier type))
 
-  (defitem "DUMO_COAL_GENERATOR_1" ConsUtils/HEAD_GENERATOR
-           "&c煤发电机 &7- &fMk.&eI&r"
-           ""
-           (LoreBuilder/machine MachineTier/AVERAGE MachineType/GENERATOR)
-           (LoreBuilder/powerBuffer 64)
-           (LoreBuilder/powerPerSecond 16))
-  )
+(defn lore-power-buf [buf]
+  (LoreBuilder/powerBuffer buf))
+
+(defn lore-power-per-sec [pow]
+  (LoreBuilder/powerPerSecond pow))
+
+(defmacro field-by-name [^String class ^String field]
+  `(eval (symbol (str ~class "/" ~field))))
+
+(defn ^ItemStack get-custom-head [^String base64]
+  (SlimefunUtils/getCustomHead base64))
+
+(defn ^ItemStack head-texture [name]
+  (name {:generator (get-custom-head "9343ce58da54c79924a2c9331cfc417fe8ccbbea9be45a7ac85860a6c730")}))
+
+(defn ^ItemStack with-tier [^ItemStack item tier]
+  (.withTier ItemEffectUtils/Companion item tier))
+
+(def ^{:dynamic true
+       :tag     ItemStack} generic)
+
+(defn construct-tiered-machine [^String name-in-uppercase tier ^List lore]
+  (let [key-name (-> name-in-uppercase .toLowerCase (.replaceAll "_" "-"))
+        lore (ClojureUtils/consToList (cons "" lore))]
+    {(keyword (str key-name "-" tier))
+     (SlimefunItemStack. (str "DUMO_" name-in-uppercase "_" tier)
+                         (with-tier generic tier) lore)}))
 
 (defn fetch-items []
-  (let [coal-generator-generic (CustomItemStack. (.getAsItemStack HeadTexture/GENERATOR) "&c煤发电机" (ClojureUtils/listToArr []))]
-    {:coal-generator-1 (SlimefunItemStack. "DUMO_COAL_GENERATOR_1" (.withTier ItemUtils/Companion coal-generator-generic 1)
-                                           [""
-                                            (LoreBuilder/machine MachineTier/AVERAGE MachineType/GENERATOR)
-                                            (LoreBuilder/powerBuffer 64)
-                                            (LoreBuilder/powerPerSecond 16)])}))
-
+  (let [empty-lore (ClojureUtils/listToArr [])
+        circuit-generic (CustomItemStack. Material/PAPER ["&f芯片"])
+        coal-generator-generic (CustomItemStack. (head-texture :generator) "&c煤发电机" empty-lore)]
+    (reduce merge [(binding [generic coal-generator-generic]
+                     (construct-tiered-machine "COAL_GENERATOR" 1 [(lore-machine MachineTier/AVERAGE MachineType/GENERATOR)
+                                                                   (lore-power-buf 64)
+                                                                   (lore-power-per-sec 16)]))])))

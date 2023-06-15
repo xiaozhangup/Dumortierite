@@ -14,7 +14,7 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils
 import io.sn.dumortierite.DumoCore
 import io.sn.dumortierite.abstracts.CoalGenerator
 import io.sn.dumortierite.objects.Circuit
-import io.sn.dumortierite.utils.ItemUtils
+import io.sn.dumortierite.utils.ItemEffectUtils
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -33,38 +33,38 @@ def group = new ItemGroup(new NamespacedKey(plug, "dumortierite"),
 
 def ICIRCUIT_GENERIC = new CustomItemStack(Material.PAPER, "&f芯片")
 
-def ICIRCUIT_BASIC = new SlimefunItemStack("DUMO_CIRCUIT_BASIC", ItemUtils.withTier(ICIRCUIT_GENERIC, 1))
-def ICIRCUIT_NORMAL = new SlimefunItemStack("DUMO_CIRCUIT_NORMAL", ItemUtils.withTier(ICIRCUIT_GENERIC, 2))
-def ICIRCUIT_ADVANCED = new SlimefunItemStack("DUMO_CIRCUIT_ADVANCED", ItemUtils.withTier(ICIRCUIT_GENERIC, 3))
-def ICIRCUIT_ENHANCED = new SlimefunItemStack("DUMO_CIRCUIT_ENHANCED", ItemUtils.withTier(ICIRCUIT_GENERIC, 4))
-def ICIRCUIT_ULTIMATE = new SlimefunItemStack("DUMO_CIRCUIT_ULTIMATE", ItemUtils.withTier(ICIRCUIT_GENERIC, 5))
-def ICIRCUIT_END = new SlimefunItemStack("DUMO_CIRCUIT_END", ItemUtils.withTier(ICIRCUIT_GENERIC, 6))
+def ICIRCUIT_BASIC = new SlimefunItemStack("DUMO_CIRCUIT_BASIC", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 1))
+def ICIRCUIT_NORMAL = new SlimefunItemStack("DUMO_CIRCUIT_NORMAL", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 2))
+def ICIRCUIT_ADVANCED = new SlimefunItemStack("DUMO_CIRCUIT_ADVANCED", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 3))
+def ICIRCUIT_ENHANCED = new SlimefunItemStack("DUMO_CIRCUIT_ENHANCED", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 4))
+def ICIRCUIT_ULTIMATE = new SlimefunItemStack("DUMO_CIRCUIT_ULTIMATE", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 5))
+def ICIRCUIT_END = new SlimefunItemStack("DUMO_CIRCUIT_END", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 6))
 
 def ICOAL_GENERATOR_GENERIC = new CustomItemStack(HeadTexture.GENERATOR.asItemStack, "&c煤发电机")
 
 def ICOAL_GENERATOR_1 = new SlimefunItemStack("DUMO_COAL_GENERATOR_1",
-        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 1),
+        ItemEffectUtils.withTier(ICOAL_GENERATOR_GENERIC, 1),
         ["",
          LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
          LoreBuilder.powerBuffer(64),
          LoreBuilder.powerPerSecond(16)])
 
 def ICOAL_GENERATOR_2 = new SlimefunItemStack("DUMO_COAL_GENERATOR_2",
-        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 2),
+        ItemEffectUtils.withTier(ICOAL_GENERATOR_GENERIC, 2),
         ["",
          LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
          LoreBuilder.powerBuffer(128),
          LoreBuilder.powerPerSecond(32)])
 
 def ICOAL_GENERATOR_3 = new SlimefunItemStack("DUMO_COAL_GENERATOR_3",
-        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 3),
+        ItemEffectUtils.withTier(ICOAL_GENERATOR_GENERIC, 3),
         ["",
          LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
          LoreBuilder.powerBuffer(256),
          LoreBuilder.powerPerSecond(64)])
 
 def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
-        ItemUtils.withTier(ICOAL_GENERATOR_GENERIC, 4),
+        ItemEffectUtils.withTier(ICOAL_GENERATOR_GENERIC, 4),
         ["",
          "&f使用先进的催化剂加快燃料燃烧速度",
          "",
@@ -153,7 +153,7 @@ def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
 (new CoalGenerator(group, ICOAL_GENERATOR_4, type, nullRecipe) {
     @Override
     ItemStack getProgressBar() {
-        return ItemUtils.glow(new ItemStack(Material.FLINT_AND_STEEL))
+        return ItemEffectUtils.glow(new ItemStack(Material.FLINT_AND_STEEL))
     }
 
     @Override

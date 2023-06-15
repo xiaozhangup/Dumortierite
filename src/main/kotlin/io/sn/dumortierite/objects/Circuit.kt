@@ -8,7 +8,7 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler
 import io.sn.dumortierite.DumoCore
 import io.sn.dumortierite.utils.AbstractProgram
-import io.sn.dumortierite.utils.ItemUtils.Companion.explainTier
+import io.sn.dumortierite.utils.ItemEffectUtils.Companion.explainTier
 import org.bukkit.inventory.ItemStack
 
 class Circuit(

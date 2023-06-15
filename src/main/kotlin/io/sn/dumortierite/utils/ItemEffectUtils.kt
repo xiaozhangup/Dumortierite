@@ -1,13 +1,12 @@
 package io.sn.dumortierite.utils
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack
 import io.sn.dumortierite.DumoCore
 import net.kyori.adventure.text.Component
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
-class ItemUtils {
+class ItemEffectUtils {
 
     companion object {
         @JvmStatic
