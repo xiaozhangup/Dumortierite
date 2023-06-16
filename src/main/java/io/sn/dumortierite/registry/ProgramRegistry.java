@@ -1,11 +1,7 @@
 package io.sn.dumortierite.registry;
 
-import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import io.sn.dumortierite.DumoCore;
 import io.sn.dumortierite.utils.AbstractProgram;
-import io.sn.dumortierite.utils.SpecificProgramType;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -35,13 +31,8 @@ public class ProgramRegistry {
         return this.idRegistry;
     }
 
-    public void init() {
-        registerProgram(new AbstractProgram(SpecificProgramType.DEFAULT, "&f空程序&r", 0) {
-            @Override
-            public void load(@NotNull AbstractProgram program, @NotNull Location l, @NotNull SlimefunBlockData data) {
-                l.getWorld().spawnParticle(Particle.END_ROD, 0.5, 0.5, 0.5, 5);
-            }
-        });
+    public void init(DumoCore plug) {
+        plug.setupPrograms(this);
     }
 
 }

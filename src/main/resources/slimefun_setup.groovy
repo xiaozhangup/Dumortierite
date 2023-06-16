@@ -1,6 +1,4 @@
-//file:noinspection GrPackage
 //file:noinspection GrDeprecatedAPIUsage
-
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack
@@ -19,6 +17,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 
 //noinspection GrUnresolvedAccess
 DumoCore plug = core
@@ -31,14 +30,26 @@ def group = new ItemGroup(new NamespacedKey(plug, "dumortierite"),
         new CustomItemStack(SlimefunUtils.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWZhYzhhMGMxM2E1YTM2NzQ3NjBhOGY1ZTNkMWEyMzQwYWRlYmJjMWE1ODY1M2JlZTk1NjgzMjRhMWViMzNjYSJ9fX0="),
                 "&9蓝线石 : Dumortierite Craft&f"), 4)
 
-def ICIRCUIT_GENERIC = new CustomItemStack(Material.PAPER, "&f芯片")
+def ICIRCUIT_GENERIC = new CustomItemStack(Material.PAPER, "&f芯片", "", "&f内部程序: &f空程序")
 
-def ICIRCUIT_BASIC = new SlimefunItemStack("DUMO_CIRCUIT_BASIC", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 1))
-def ICIRCUIT_NORMAL = new SlimefunItemStack("DUMO_CIRCUIT_NORMAL", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 2))
-def ICIRCUIT_ADVANCED = new SlimefunItemStack("DUMO_CIRCUIT_ADVANCED", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 3))
-def ICIRCUIT_ENHANCED = new SlimefunItemStack("DUMO_CIRCUIT_ENHANCED", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 4))
-def ICIRCUIT_ULTIMATE = new SlimefunItemStack("DUMO_CIRCUIT_ULTIMATE", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 5))
-def ICIRCUIT_END = new SlimefunItemStack("DUMO_CIRCUIT_END", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 6))
+def ICIRCUIT_BASIC = new SlimefunItemStack("DUMO_CIRCUIT_BASIC", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 1), (ItemMeta meta) -> {
+    meta.setCustomModelData(-4000)
+})
+def ICIRCUIT_NORMAL = new SlimefunItemStack("DUMO_CIRCUIT_NORMAL", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 2), (ItemMeta meta) -> {
+    meta.setCustomModelData(-4001)
+})
+def ICIRCUIT_ADVANCED = new SlimefunItemStack("DUMO_CIRCUIT_ADVANCED", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 3), (ItemMeta meta) -> {
+    meta.setCustomModelData(-4002)
+})
+def ICIRCUIT_ENHANCED = new SlimefunItemStack("DUMO_CIRCUIT_ENHANCED", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 4), (ItemMeta meta) -> {
+    meta.setCustomModelData(-4003)
+})
+def ICIRCUIT_ULTIMATE = new SlimefunItemStack("DUMO_CIRCUIT_ULTIMATE", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 5), (ItemMeta meta) -> {
+    meta.setCustomModelData(-4004)
+})
+def ICIRCUIT_END = new SlimefunItemStack("DUMO_CIRCUIT_END", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 6), (ItemMeta meta) -> {
+    meta.setCustomModelData(-4005)
+})
 
 def ICOAL_GENERATOR_GENERIC = new CustomItemStack(HeadTexture.GENERATOR.asItemStack, "&c煤发电机")
 

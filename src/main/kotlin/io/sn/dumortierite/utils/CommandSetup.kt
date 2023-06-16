@@ -8,7 +8,7 @@ import dev.jorel.commandapi.executors.PlayerCommandExecutor
 import io.sn.dumortierite.DumoCore
 
 class CommandSetup {
-    fun init(plug: DumoCore) {
+    fun init() {
         val arguments = listOf<Argument<*>>(
             StringArgument("world").replaceSuggestions(
                 ArgumentSuggestions.strings(DumoCore.programRegistry.allAvaliableId)
@@ -20,10 +20,17 @@ class CommandSetup {
                 val toBurn = args[0] as String
                 val itemInHand = player.inventory.itemInMainHand
 
-                if (CircuitUtils.isCircuit(itemInHand)) {
+                if (!CircuitUtils.isCircuit(itemInHand)) {
                     player.sendMessage(DumoCore.minimsg.deserialize("<red>这不是一块芯片!"))
                 } else {
-                    CircuitUtils.burnProgramToCircuit(itemInHand, DumoCore.programRegistry.getProgramById(toBurn))
+                    val prog = DumoCore.programRegistry.getProgramById(toBurn)
+                    if (prog != null) {
+                        try {
+                            CircuitUtils.burnProgramToCircuit(itemInHand, prog)
+                        } catch (ex: IncompatibleChipLevelException) {
+                            player.sendMessage(DumoCore.minimsg.deserialize("<red>这块芯片无法烧录这个程序, 该程序至少需要${prog.leastChipTier}"))
+                        }
+                    }
                 }
             }).register()
 

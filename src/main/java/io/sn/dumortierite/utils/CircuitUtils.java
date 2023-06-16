@@ -3,8 +3,10 @@ package io.sn.dumortierite.utils;
 import de.tr7zw.nbtapi.NBT;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.sn.dumortierite.objects.Circuit;
+import io.sn.dumortierite.DumoCore;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 
 public class CircuitUtils {
 
@@ -22,6 +24,11 @@ public class CircuitUtils {
         if (NBT.get(circuit, nbt -> nbt.getInteger("chip-tier")) < p.getLeastChipTier()) {
             throw new IncompatibleChipLevelException();
         }
+
+        var lore = Objects.requireNonNull(circuit.lore());
+        lore.set(1, DumoCore.Companion.getMinimsg().deserialize("<!italic><white>内部程序: ").append(p.getDisplayName()));
+
+        circuit.lore(lore);
 
         NBT.modify(circuit, (item) -> {
             item.setString("program-id", p.getId());

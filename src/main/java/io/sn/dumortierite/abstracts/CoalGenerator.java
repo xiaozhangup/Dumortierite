@@ -6,8 +6,10 @@ import de.tr7zw.nbtapi.NBT;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperation;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
@@ -29,6 +31,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +52,7 @@ public abstract class CoalGenerator extends AGenerator {
     private static final int SLOT_INDICATOR = 20;
     private static final int SLOT_CIRCUIT = 17;
 
-    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.COAL_GENERATOR}, this);
+    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.COAL_GENERATOR, SpecificProgramType.COAL_GENERATOR_ADV}, this);
 
     private final MachineProcessor<FuelOperation> processor = new MachineProcessor<>(this);
 
@@ -82,6 +85,26 @@ public abstract class CoalGenerator extends AGenerator {
 
         addItemHandler(onBlockBreak());
         registerDefaultFuelTypes();
+    }
+
+    @Nonnull
+    @Override
+    protected BlockBreakHandler onBlockBreak() {
+        return new SimpleBlockBreakHandler() {
+
+            @Override
+            public void onBlockBreak(@Nonnull Block b) {
+                BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
+
+                if (inv != null) {
+                    inv.dropItems(b.getLocation(), getInputSlots());
+                    inv.dropItems(b.getLocation(), getOutputSlots());
+                    inv.dropItems(b.getLocation(), getMiscItemSlots());
+                }
+
+                processor.endOperation(b);
+            }
+        };
     }
 
     @Override
@@ -133,7 +156,13 @@ public abstract class CoalGenerator extends AGenerator {
         if (CircuitUtils.isCircuit(inv.getItemInSlot(SLOT_CIRCUIT))) {
             // var tier = NBT.get(itemInSlot, nbt -> nbt.getInteger("chip-tier"));
             var program = NBT.get(itemInSlot, nbt -> nbt.getString("program-id"));
-            programLoader.preLoad(Objects.requireNonNull(DumoCore.Companion.getProgramRegistry().getProgramById(program)), l, data);
+            try {
+                if (!programLoader.preLoad(Objects.requireNonNull(DumoCore.Companion.getProgramRegistry().getProgramById(program)), l, data)) {
+                    return 0;
+                }
+            } catch (IncompatibleProgramTypeException ex) {
+                return 0;
+            }
         } else {
             return 0;
         }
@@ -193,6 +222,10 @@ public abstract class CoalGenerator extends AGenerator {
     @Override
     public int[] getOutputSlots() {
         return SLOT_OUT;
+    }
+
+    public int[] getMiscItemSlots() {
+        return new int[]{SLOT_CIRCUIT};
     }
 
 

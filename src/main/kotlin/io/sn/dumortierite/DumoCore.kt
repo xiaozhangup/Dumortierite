@@ -24,7 +24,6 @@ open class DumoCore : JavaPlugin(), DumoSlimefunAddon {
     lateinit var plug: DumoCore
 
     companion object {
-        var plug: DumoCore = DumoCore.plug
         var minimsg: MiniMessage = MiniMessage.miniMessage()
         var config: FileConfiguration = DumoCore.config
         var programRegistry: ProgramRegistry = ProgramRegistry()
@@ -32,8 +31,7 @@ open class DumoCore : JavaPlugin(), DumoSlimefunAddon {
 
     override fun onEnable() {
         plug = this
-
-        programRegistry.init()
+        programRegistry.init(this)
 
         Thread.currentThread().contextClassLoader = this.classLoader
 
@@ -63,8 +61,26 @@ open class DumoCore : JavaPlugin(), DumoSlimefunAddon {
         }
     }
 
+    fun setupPrograms(registry: ProgramRegistry) {
+        try {
+            with(
+                GroovyShell(this.classLoader, Binding().apply {
+                    setProperty("core", plug)
+                    setProperty("registry", registry)
+                })
+            ) {
+                evaluate(getResource("program_setup.groovy")?.let {
+                    InputStreamReader(it)
+                })
+            }
+        } catch (e: Exception) {
+            Exception("Unexcepted error occurred while loading 'program_setup.groovy'!\n${e.message}").printStackTrace()
+            server.pluginManager.disablePlugin(this)
+        }
+    }
+
     private fun setupCommand() {
-        CommandSetup().init(this)
+        CommandSetup().init()
     }
 
 }

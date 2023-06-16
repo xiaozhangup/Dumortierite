@@ -2,7 +2,8 @@ package io.sn.dumortierite.utils
 
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem
-import org.bukkit.ChatColor
+import io.sn.dumortierite.DumoCore
+import net.kyori.adventure.text.Component
 import org.bukkit.Location
 
 enum class ProcessorType {
@@ -10,17 +11,23 @@ enum class ProcessorType {
 }
 
 enum class SpecificProgramType {
-    GENERIC_GENERATOR, GENERIC_MACHINE, COAL_GENERATOR, COMPRESSOR, DEFAULT
+    DEFAULT, GENERIC_GENERATOR, GENERIC_MACHINE,
+    COAL_GENERATOR, COAL_GENERATOR_ADV,
+    COMPRESSOR,
 }
 
 
 abstract class AbstractProgram(
     val type: SpecificProgramType,
-    private val name: String,
     val leastChipTier: Int,
+    private val name: String,
+    private val desc: String
 ) {
-    val displayName: String
-        get() = ChatColor.translateAlternateColorCodes('&', this.type.name)
+    val displayName: Component
+        get() = DumoCore.minimsg.deserialize(name)
+
+    val displayDesc: Component
+        get() = DumoCore.minimsg.deserialize(desc)
 
     val id: String = type.name
 
@@ -43,13 +50,15 @@ class ProgramLoader(
     private val sfItem: SlimefunItem,
 ) {
 
-    fun preLoad(program: AbstractProgram, l: Location, data: SlimefunBlockData) {
-        if (program.type == SpecificProgramType.DEFAULT) return
+    @Throws(IncompatibleProgramTypeException::class)
+    fun preLoad(program: AbstractProgram, l: Location, data: SlimefunBlockData): Boolean {
+        if (program.type == SpecificProgramType.DEFAULT) return false
 
         when (processorType) {
             ProcessorType.GENERATOR -> {
                 if (allowedType.contains(program.type) || program.type == SpecificProgramType.GENERIC_GENERATOR) {
                     program.load(program, l, data)
+                    return true
                 } else {
                     throw IncompatibleProgramTypeException(program.type, sfItem)
                 }
@@ -58,6 +67,7 @@ class ProgramLoader(
             ProcessorType.MACHINE -> {
                 if (allowedType.contains(program.type) || program.type == SpecificProgramType.GENERIC_MACHINE) {
                     program.load(program, l, data)
+                    return true
                 } else {
                     throw IncompatibleProgramTypeException(program.type, sfItem)
                 }

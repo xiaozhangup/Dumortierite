@@ -31,22 +31,26 @@ class Circuit(
             it.setInteger("chip-tier", tier)
         }
         addItemHandler(ItemUseHandler { handler ->
-            val id = NBT.get(item) {
+            if (!handler.clickedBlock.isEmpty && !handler.player.isSneaking) return@ItemUseHandler
+
+            val id = NBT.get(handler.item) {
                 it.getString("program-id")
             }
-            val tier = NBT.get(item) {
+            val tier = NBT.get(handler.item) {
                 it.getInteger("chip-tier")
             }
 
-            handler.player.sendMessage(DumoCore.minimsg.deserialize("<white>芯片级别: ${explainTier(tier, "")}"))
+            val prog = DumoCore.programRegistry.getProgramById(id)!!
+
             handler.player.sendMessage(
-                DumoCore.minimsg.deserialize(
-                    "<white>内部程序: ${
-                        DumoCore.programRegistry.getProgramById(
-                            id
-                        )?.displayName
-                    }"
-                )
+                DumoCore.minimsg.deserialize("<newline><strikethrough>                                     <newline><reset>")
+                    .append(DumoCore.minimsg.deserialize("<white>芯片级别: ${explainTier(tier, "")}"))
+            )
+            handler.player.sendMessage(
+                DumoCore.minimsg.deserialize("<white>内部程序: ").append(prog.displayName)
+                    .append(DumoCore.minimsg.deserialize("<newline><strikethrough>                                     <newline><reset>"))
+                    .append(prog.displayDesc)
+                    .append(DumoCore.minimsg.deserialize("<newline><strikethrough>                                     <newline><reset>"))
             )
         })
     }

@@ -1,7 +1,6 @@
 package io.sn.dumortierite.utils
 
 import io.sn.dumortierite.DumoCore
-import net.kyori.adventure.text.Component
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -20,35 +19,23 @@ object ItemEffectUtils {
     @JvmStatic
     fun ItemStack.withTier(tier: Int): ItemStack {
         itemMeta = itemMeta.apply {
-            displayName(itemMeta.displayName()?.append(DumoCore.minimsg.deserialize(explainTier(tier, "<gray> - "))))
+            displayName(
+                this.displayName()?.let {
+                    DumoCore.minimsg.deserialize("<!italic>").append(it)
+                        .append(DumoCore.minimsg.deserialize(explainTier(tier, "<gray> - ")))
+                }
+            )
         }
         return this
     }
 
     @JvmStatic
-    fun explainTier(tier: Int, before: String): String = when (tier) {
-        1 -> {
-            before + "<dark_gray>Mk.<color:#ffff55>" + RomanUtils.intToRoman(1)
-        }
-
-        2 -> {
-            before + "<dark_gray>Mk.<color:#aaffaa>" + RomanUtils.intToRoman(2)
-        }
-
-        3 -> {
-            before + "<dark_gray>Mk.<color:#55ffff>" + RomanUtils.intToRoman(3)
-        }
-
-        4 -> {
-            before + "<dark_gray>Mk.<color:#aaaaff>" + RomanUtils.intToRoman(4)
-        }
-
-        5 -> {
-            before + "<dark_gray>Mk.<color:#ff55ff>" + RomanUtils.intToRoman(5)
-        }
-
-        else -> {
-            before + "<dark_gray>Mk.<color:#ff5555>" + RomanUtils.intToRoman(tier)
-        }
+    fun explainTier(tier: Int, before: String): String = "$before<reset><dark_gray>Mk.<color:#" + when (tier) {
+        1 -> "ffff55>" + RomanUtils.intToRoman(1)
+        2 -> "aaffaa>" + RomanUtils.intToRoman(2)
+        3 -> "55ffff>" + RomanUtils.intToRoman(3)
+        4 -> "aaaaff>" + RomanUtils.intToRoman(4)
+        5 -> "ff55ff>" + RomanUtils.intToRoman(5)
+        else -> "ff5555>" + RomanUtils.intToRoman(tier)
     }
 }
