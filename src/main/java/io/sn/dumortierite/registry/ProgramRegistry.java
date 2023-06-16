@@ -14,6 +14,7 @@ import java.util.List;
 public class ProgramRegistry {
 
     private final List<AbstractProgram> registry = new ArrayList<>();
+    private final List<String> idRegistry = new ArrayList<>();
 
     @Nullable
     public AbstractProgram getProgramById(String id) {
@@ -27,6 +28,11 @@ public class ProgramRegistry {
 
     public void registerProgram(AbstractProgram program) {
         registry.add(program);
+        idRegistry.add(program.getId());
+    }
+
+    public List<String> getAllAvaliableId() {
+        return this.idRegistry;
     }
 
     public void init() {

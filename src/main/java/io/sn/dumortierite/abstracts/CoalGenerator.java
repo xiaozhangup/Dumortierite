@@ -12,10 +12,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperatio
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.sn.dumortierite.DumoCore;
-import io.sn.dumortierite.utils.ProcessorType;
-import io.sn.dumortierite.utils.ProgramLoader;
-import io.sn.dumortierite.utils.SpecificProgramType;
-import io.sn.dumortierite.utils.UIUtils;
+import io.sn.dumortierite.utils.*;
 import io.sn.slimefun4.ChestMenuTexture;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -133,7 +130,7 @@ public abstract class CoalGenerator extends AGenerator {
         }
 
         // circuit judgement!
-        if (DumoCore.Companion.getItemStackRegistry().getChipsItemStack().contains(itemInSlot)) {
+        if (CircuitUtils.isCircuit(inv.getItemInSlot(SLOT_CIRCUIT))) {
             // var tier = NBT.get(itemInSlot, nbt -> nbt.getInteger("chip-tier"));
             var program = NBT.get(itemInSlot, nbt -> nbt.getString("program-id"));
             programLoader.preLoad(Objects.requireNonNull(DumoCore.Companion.getProgramRegistry().getProgramById(program)), l, data);

@@ -8,6 +8,7 @@ main: io.sn.dumortierite.DumoCore
 depend:
   - Slimefun
   - NBTAPI
+  - CommandAPI
 
 softdepend:
   - ItemsAdder
@@ -18,4 +19,3 @@ libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:1.7.10
   - net.kyori:adventure-text-minimessage:4.13.1
   - org.apache.groovy:groovy-jsr223:4.0.12
-  - org.clojure:clojure:1.11.1

@@ -183,6 +183,3 @@ def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
 /*
   --- Cleanup ---
  */
-// throw back registry to DumoCore.kt
-//noinspection GroovyUnusedAssignment
-[ICIRCUIT_BASIC, ICIRCUIT_NORMAL, ICIRCUIT_ADVANCED, ICIRCUIT_ENHANCED, ICIRCUIT_END] as ArrayList<ItemStack>

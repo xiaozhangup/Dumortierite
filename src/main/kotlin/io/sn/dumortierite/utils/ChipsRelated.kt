@@ -34,6 +34,9 @@ abstract class AbstractProgram(
 class IncompatibleProgramTypeException(type: SpecificProgramType, sfItem: SlimefunItem) :
     Exception("Unsupported program type (${type}) for ${sfItem.id}")
 
+class IncompatibleChipLevelException() :
+    Exception("This program needs more advanced chip to burn on.")
+
 class ProgramLoader(
     private val processorType: ProcessorType,
     private val allowedType: Array<out SpecificProgramType>,
