@@ -12,3 +12,5 @@ build
 assemble
 
 **/.#*
+**/.clj-kondo
+**/.lsp
