@@ -29,7 +29,7 @@ object ItemEffectUtils {
     }
 
     @JvmStatic
-    fun ItemStack.withCMD(cmd: Int): ItemStack {
+    fun ItemStack.withCustomModelData(cmd: Int): ItemStack {
         val tim = this.clone()
         tim.setItemMeta(tim.itemMeta.apply {
             setCustomModelData(cmd)

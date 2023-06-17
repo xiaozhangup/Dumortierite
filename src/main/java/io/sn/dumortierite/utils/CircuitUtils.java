@@ -12,12 +12,12 @@ public class CircuitUtils {
 
     @SuppressWarnings("DataFlowIssue")
     public static boolean isCircuit(ItemStack item) {
-        return SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_BASIC").getItem(), true) ||
-                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_NORMAL").getItem(), true) ||
-                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_ADVANCED").getItem(), true) ||
-                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_ENHANCED").getItem(), true) ||
-                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_ULTIMATE").getItem(), true) ||
-                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_END").getItem(), true);
+        return SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_1").getItem(), true) ||
+                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_2").getItem(), true) ||
+                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_3").getItem(), true) ||
+                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_4").getItem(), true) ||
+                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_5").getItem(), true) ||
+                SlimefunUtils.isItemSimilar(item, SlimefunItem.getById("DUMO_CIRCUIT_6").getItem(), true);
     }
 
     public static void burnProgramToCircuit(ItemStack circuit, AbstractProgram p) throws IncompatibleChipLevelException {

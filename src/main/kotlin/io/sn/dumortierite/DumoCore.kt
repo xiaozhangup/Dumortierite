@@ -3,7 +3,7 @@ package io.sn.dumortierite
 import groovy.lang.Binding
 import groovy.lang.GroovyShell
 import io.sn.dumortierite.registry.ProgramRegistry
-import io.sn.dumortierite.utils.CommandSetup
+import io.sn.dumortierite.setup.CommandSetup
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.plugin.java.JavaPlugin

@@ -1,4 +1,4 @@
-package io.sn.dumortierite.utils
+package io.sn.dumortierite.setup
 
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.Argument
@@ -6,6 +6,8 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.StringArgument
 import dev.jorel.commandapi.executors.PlayerCommandExecutor
 import io.sn.dumortierite.DumoCore
+import io.sn.dumortierite.utils.CircuitUtils
+import io.sn.dumortierite.utils.IncompatibleChipLevelException
 
 class CommandSetup {
     fun init() {
@@ -28,7 +30,7 @@ class CommandSetup {
                         try {
                             CircuitUtils.burnProgramToCircuit(itemInHand, prog)
                         } catch (ex: IncompatibleChipLevelException) {
-                            player.sendMessage(DumoCore.minimsg.deserialize("<red>这块芯片无法烧录这个程序, 该程序至少需要${prog.leastChipTier}"))
+                            player.sendMessage(DumoCore.minimsg.deserialize("<red>烧录该程序至少需要 <white>${prog.leastChipTier} <red>级的芯片"))
                         }
                     }
                 }
