@@ -118,7 +118,7 @@ public abstract class BlackMetalCoalGenerator extends AGenerator {
             preset.addItem(i, UIUtils.UI_BACKGROUND, ChestMenuUtils.getEmptyClickHandler());
         }
         for (int i : SLOT_CIRCUIT_DISPLAY) {
-            preset.addItem(i, UIUtils.UI_BACKGROUND, ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, UIUtils.UI_CODE, ChestMenuUtils.getEmptyClickHandler());
         }
         preset.addMenuClickHandler(SLOT_CIRCUIT, (p, slot, item, action) -> true);
 
