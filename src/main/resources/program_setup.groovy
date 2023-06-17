@@ -34,3 +34,24 @@ reg.registerProgram(new AbstractProgram(SpecificProgramType.COAL_GENERATOR_ADV, 
         data.setData("progressive", "2")
     }
 })
+
+reg.registerProgram(new AbstractProgram(SpecificProgramType.BIOMASS_GENERATOR, 1, buildName("color:#F5F5F5", "生物质发电机马达控制程序", false), "<white>使生物质发电机可以正常工作") {
+    @Override
+    void load(@NotNull AbstractProgram program, @NotNull Location l, @NotNull SlimefunBlockData data) {
+        data.setData("progressive", "1")
+    }
+})
+
+reg.registerProgram(new AbstractProgram(SpecificProgramType.BIOMASS_GENERATOR_ADV, 3, buildName("red", "生物质发电机优化马达控制程序", false), "<white>优化后的程序<newline>可以使发电机效率整整提高一倍") {
+    @Override
+    void load(@NotNull AbstractProgram program, @NotNull Location l, @NotNull SlimefunBlockData data) {
+        data.setData("progressive", "2")
+    }
+})
+
+reg.registerProgram(new AbstractProgram(SpecificProgramType.BLACK_METAL_COAL_GENERATOR, 4, buildName("red", "合金煤发电机马达控制程序", false), "<white>高度优化的程序<newline>使合金煤发电机可以正常工作") {
+    @Override
+    void load(@NotNull AbstractProgram program, @NotNull Location l, @NotNull SlimefunBlockData data) {
+        data.setData("progressive", "1")
+    }
+})

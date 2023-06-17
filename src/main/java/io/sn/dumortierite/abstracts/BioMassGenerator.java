@@ -11,6 +11,7 @@ import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperation;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.sn.dumortierite.DumoCore;
@@ -25,6 +26,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -38,7 +40,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings("deprecation")
-public abstract class CoalGenerator extends AGenerator {
+public abstract class BioMassGenerator extends AGenerator {
 
     private static final int[] BORDER = {0, 4, 8, 9, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 31, 35, 36, 40, 44, 45, 46, 47, 47, 48, 49, 50, 51, 52, 53};
 
@@ -52,17 +54,17 @@ public abstract class CoalGenerator extends AGenerator {
     private static final int SLOT_INDICATOR = 20;
     private static final int SLOT_CIRCUIT = 17;
 
-    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.COAL_GENERATOR, SpecificProgramType.COAL_GENERATOR_ADV}, this);
+    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.BIOMASS_GENERATOR, SpecificProgramType.BIOMASS_GENERATOR_ADV}, this);
 
     private final MachineProcessor<FuelOperation> processor = new MachineProcessor<>(this);
 
     @ParametersAreNonnullByDefault
-    protected CoalGenerator(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected BioMassGenerator(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
         processor.setProgressBar(getProgressBar());
 
-        new BlockMenuPreset(item.getItemId(), getInventoryTitle(), 54, new ChestMenuTexture("dumortierite", "coal_generator")) {
+        new BlockMenuPreset(item.getItemId(), getInventoryTitle(), 54, new ChestMenuTexture("dumortierite", "biomass_generator")) {
             @Override
             public void init() {
                 constructMenu(this);
@@ -122,7 +124,38 @@ public abstract class CoalGenerator extends AGenerator {
         preset.addMenuClickHandler(SLOT_CIRCUIT, (p, slot, item, action) -> true);
 
         for (int i : SLOT_OPTION) {
-            preset.addItem(i, UIUtils.NO_OPTION, ChestMenuUtils.getEmptyClickHandler());
+            if (i == SLOT_OPTION[0]) {
+                preset.addItem(i, new CustomItemStack(Material.GUNPOWDER, "&f粒子效果 (加工时): &c关闭"), new ChestMenu.AdvancedMenuClickHandler() {
+                    @Override
+                    public boolean onClick(InventoryClickEvent e, Player p, int slot, ItemStack cursor, ClickAction action) {
+                        var loc = Objects.requireNonNull(e.getClickedInventory()).getLocation();
+                        if (loc != null) {
+                            var data = StorageCacheUtils.getBlock(loc);
+                            if (data != null) {
+                                if (Boolean.parseBoolean(data.getData("switch-particle"))) {
+                                    data.setData("switch-particle", "true");
+                                    var im = Objects.requireNonNull(e.getCurrentItem()).getItemMeta();
+                                    im.displayName(DumoCore.Companion.getMinimsg().deserialize("<white>粒子效果 (加工时): <green>启用"));
+                                    e.getCurrentItem().setItemMeta(im);
+                                    e.getCurrentItem().setType(Material.REDSTONE);
+                                } else {
+                                    data.setData("switch-particle", "false");
+                                    var im = Objects.requireNonNull(e.getCurrentItem()).getItemMeta();
+                                    im.displayName(DumoCore.Companion.getMinimsg().deserialize("<white>粒子效果 (加工时): <red>关闭"));
+                                    e.getCurrentItem().setItemMeta(im);
+                                }
+                            }
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onClick(Player p, int slot, ItemStack item, ClickAction action) {
+                        return false;
+                    }
+                });
+            } else
+                preset.addItem(i, UIUtils.NO_OPTION, ChestMenuUtils.getEmptyClickHandler());
         }
 
         for (int i : getOutputSlots()) {
@@ -146,6 +179,10 @@ public abstract class CoalGenerator extends AGenerator {
 
     @Override
     public int getGeneratedOutput(@NotNull Location l, @NotNull SlimefunBlockData data) {
+        if (data.getData("switch-particle") == null) {
+            data.setData("switch-particle", "false");
+        }
+
         BlockMenu inv = StorageCacheUtils.getMenu(l);
         FuelOperation operation = processor.getOperation(l);
 
@@ -185,6 +222,9 @@ public abstract class CoalGenerator extends AGenerator {
 
                     if (getCapacity() - charge >= getEnergyProduction()) {
                         operation.addProgress(progressive);
+                        if (Boolean.parseBoolean(data.getData("switch-particle"))) {
+                            l.getWorld().spawnParticle(Particle.SLIME, l, 10, 0.5, 1.2, 0.5);
+                        }
                         return getEnergyProduction() * progressive;
                     }
 

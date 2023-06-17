@@ -25,6 +25,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -38,7 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings("deprecation")
-public abstract class CoalGenerator extends AGenerator {
+public abstract class BlackMetalCoalGenerator extends AGenerator {
 
     private static final int[] BORDER = {0, 4, 8, 9, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 31, 35, 36, 40, 44, 45, 46, 47, 47, 48, 49, 50, 51, 52, 53};
 
@@ -52,12 +53,12 @@ public abstract class CoalGenerator extends AGenerator {
     private static final int SLOT_INDICATOR = 20;
     private static final int SLOT_CIRCUIT = 17;
 
-    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.COAL_GENERATOR, SpecificProgramType.COAL_GENERATOR_ADV}, this);
+    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.BLACK_METAL_COAL_GENERATOR}, this);
 
     private final MachineProcessor<FuelOperation> processor = new MachineProcessor<>(this);
 
     @ParametersAreNonnullByDefault
-    protected CoalGenerator(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected BlackMetalCoalGenerator(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
         processor.setProgressBar(getProgressBar());
@@ -185,6 +186,7 @@ public abstract class CoalGenerator extends AGenerator {
 
                     if (getCapacity() - charge >= getEnergyProduction()) {
                         operation.addProgress(progressive);
+                        l.getWorld().spawnParticle(Particle.FLAME, l, 3, 0.5, 1.2, 0.5);
                         return getEnergyProduction() * progressive;
                     }
 

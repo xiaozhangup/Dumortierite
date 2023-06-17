@@ -9,3 +9,7 @@ font_images:
     path: gui/coal_generator
     suggest_in_command: false
     y_position: 12
+  biomass_generator:
+    path: gui/biomass_generator
+    suggest_in_command: false
+    y_position: 12

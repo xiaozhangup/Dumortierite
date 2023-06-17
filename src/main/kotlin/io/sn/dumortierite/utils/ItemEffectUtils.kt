@@ -45,5 +45,5 @@ object ItemEffectUtils {
         4 -> "aaaaff>" + RomanUtils.intToRoman(4)
         5 -> "ff55ff>" + RomanUtils.intToRoman(5)
         else -> "ff5555>" + RomanUtils.intToRoman(tier)
-    }
+    } + "<reset>"
 }

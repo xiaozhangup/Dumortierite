@@ -7,4 +7,6 @@ import org.bukkit.inventory.ItemStack;
 public class UIUtils {
 
     public static final ItemStack UI_BACKGROUND = new CustomItemStack(Material.GRAY_STAINED_GLASS_PANE, " ").setCustomModel(4000);
+    public static final ItemStack NO_OPTION = new CustomItemStack(Material.BARRIER, " ");
+
 }

@@ -17,6 +17,15 @@
       "chars": [
         "A"
       ]
+    },
+    {
+      "type": "bitmap",
+      "file": "dumortierite:gui/biomass_generator.png",
+      "height": 10,
+      "ascent": 10,
+      "chars": [
+        "A"
+      ]
     }
   ]
 }
