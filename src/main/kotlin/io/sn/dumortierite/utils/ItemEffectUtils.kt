@@ -9,28 +9,36 @@ object ItemEffectUtils {
 
     @JvmStatic
     fun ItemStack.glow(): ItemStack {
-        itemMeta = itemMeta.apply {
+        val tim = this.clone()
+        tim.itemMeta = tim.itemMeta.apply {
             addEnchant(Enchantment.OXYGEN, 1, true)
             addItemFlags(ItemFlag.HIDE_ENCHANTS)
         }
-        return this
+        return tim
     }
 
     @JvmStatic
     fun ItemStack.withTier(tier: Int): ItemStack {
-        itemMeta = itemMeta.apply {
+        val tim = this.clone()
+        tim.setItemMeta(tim.itemMeta.apply {
             displayName(
-                this.displayName()?.let {
-                    DumoCore.minimsg.deserialize("<!italic>").append(it)
-                        .append(DumoCore.minimsg.deserialize(explainTier(tier, "<gray> - ")))
-                }
+                this.displayName()?.append(DumoCore.minimsg.deserialize(explainTier(tier, "<!italic><gray> - ")))
             )
-        }
-        return this
+        })
+        return tim
     }
 
     @JvmStatic
-    fun explainTier(tier: Int, before: String): String = "$before<reset><dark_gray>Mk.<color:#" + when (tier) {
+    fun ItemStack.withCMD(cmd: Int): ItemStack {
+        val tim = this.clone()
+        tim.setItemMeta(tim.itemMeta.apply {
+            setCustomModelData(cmd)
+        })
+        return tim
+    }
+
+    @JvmStatic
+    fun explainTier(tier: Int, before: String): String = "$before<dark_gray>Mk.<color:#" + when (tier) {
         1 -> "ffff55>" + RomanUtils.intToRoman(1)
         2 -> "aaffaa>" + RomanUtils.intToRoman(2)
         3 -> "55ffff>" + RomanUtils.intToRoman(3)

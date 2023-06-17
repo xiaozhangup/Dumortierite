@@ -165,9 +165,14 @@ public abstract class CoalGenerator extends AGenerator {
             }
         } else {
             return 0;
-        }
 
-        var progressive = Integer.parseInt(Objects.requireNonNull(data.getData("progressive")));
+        }
+        var progressive = 0;
+
+        var progressiveNullable = data.getData("progressive");
+        if (progressiveNullable != null) {
+            progressive = Integer.parseInt(progressiveNullable);
+        }
 
         if (operation != null) {
             if (!operation.isFinished()) {
@@ -178,12 +183,12 @@ public abstract class CoalGenerator extends AGenerator {
 
                     if (getCapacity() - charge >= getEnergyProduction()) {
                         operation.addProgress(progressive);
-                        return getEnergyProduction();
+                        return getEnergyProduction() * progressive;
                     }
 
                     return 0;
                 } else {
-                    operation.addProgress(1);
+                    operation.addProgress(progressive);
                     return getEnergyProduction();
                 }
             } else {

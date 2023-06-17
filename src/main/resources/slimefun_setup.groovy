@@ -1,5 +1,6 @@
 //file:noinspection GrDeprecatedAPIUsage
 
+
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType
@@ -17,7 +18,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 
 //noinspection GrUnresolvedAccess
 DumoCore plug = core
@@ -32,24 +32,12 @@ def group = new ItemGroup(new NamespacedKey(plug, "dumortierite"),
 
 def ICIRCUIT_GENERIC = new CustomItemStack(Material.PAPER, "&f芯片", "", "&f内部程序: &f空程序")
 
-def ICIRCUIT_BASIC = new SlimefunItemStack("DUMO_CIRCUIT_BASIC", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 1), (ItemMeta meta) -> {
-    meta.setCustomModelData(-4000)
-})
-def ICIRCUIT_NORMAL = new SlimefunItemStack("DUMO_CIRCUIT_NORMAL", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 2), (ItemMeta meta) -> {
-    meta.setCustomModelData(-4001)
-})
-def ICIRCUIT_ADVANCED = new SlimefunItemStack("DUMO_CIRCUIT_ADVANCED", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 3), (ItemMeta meta) -> {
-    meta.setCustomModelData(-4002)
-})
-def ICIRCUIT_ENHANCED = new SlimefunItemStack("DUMO_CIRCUIT_ENHANCED", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 4), (ItemMeta meta) -> {
-    meta.setCustomModelData(-4003)
-})
-def ICIRCUIT_ULTIMATE = new SlimefunItemStack("DUMO_CIRCUIT_ULTIMATE", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 5), (ItemMeta meta) -> {
-    meta.setCustomModelData(-4004)
-})
-def ICIRCUIT_END = new SlimefunItemStack("DUMO_CIRCUIT_END", ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 6), (ItemMeta meta) -> {
-    meta.setCustomModelData(-4005)
-})
+def ICIRCUIT_BASIC = new SlimefunItemStack("DUMO_CIRCUIT_BASIC", ItemEffectUtils.withCMD(ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 1), 4000))
+def ICIRCUIT_NORMAL = new SlimefunItemStack("DUMO_CIRCUIT_NORMAL", ItemEffectUtils.withCMD(ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 2), 4001))
+def ICIRCUIT_ADVANCED = new SlimefunItemStack("DUMO_CIRCUIT_ADVANCED", ItemEffectUtils.withCMD(ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 3), 4002))
+def ICIRCUIT_ENHANCED = new SlimefunItemStack("DUMO_CIRCUIT_ENHANCED", ItemEffectUtils.withCMD(ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 4), 4003))
+def ICIRCUIT_ULTIMATE = new SlimefunItemStack("DUMO_CIRCUIT_ULTIMATE", ItemEffectUtils.withCMD(ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 5), 4004))
+def ICIRCUIT_END = new SlimefunItemStack("DUMO_CIRCUIT_END", ItemEffectUtils.withCMD(ItemEffectUtils.withTier(ICIRCUIT_GENERIC, 6), 4005))
 
 def ICOAL_GENERATOR_GENERIC = new CustomItemStack(HeadTexture.GENERATOR.asItemStack, "&c煤发电机")
 
@@ -63,25 +51,25 @@ def ICOAL_GENERATOR_1 = new SlimefunItemStack("DUMO_COAL_GENERATOR_1",
 def ICOAL_GENERATOR_2 = new SlimefunItemStack("DUMO_COAL_GENERATOR_2",
         ItemEffectUtils.withTier(ICOAL_GENERATOR_GENERIC, 2),
         ["",
-         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
+         LoreBuilder.machine(MachineTier.MEDIUM, MachineType.GENERATOR),
          LoreBuilder.powerBuffer(128),
-         LoreBuilder.powerPerSecond(32)])
+         LoreBuilder.powerPerSecond(18)])
 
 def ICOAL_GENERATOR_3 = new SlimefunItemStack("DUMO_COAL_GENERATOR_3",
         ItemEffectUtils.withTier(ICOAL_GENERATOR_GENERIC, 3),
         ["",
-         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
+         LoreBuilder.machine(MachineTier.GOOD, MachineType.GENERATOR),
          LoreBuilder.powerBuffer(256),
-         LoreBuilder.powerPerSecond(64)])
+         LoreBuilder.powerPerSecond(20)])
 
 def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
         ItemEffectUtils.withTier(ICOAL_GENERATOR_GENERIC, 4),
         ["",
          "&f使用先进的催化剂加快燃料燃烧速度",
          "",
-         LoreBuilder.machine(MachineTier.AVERAGE, MachineType.GENERATOR),
-         LoreBuilder.powerBuffer(512),
-         LoreBuilder.powerPerSecond(128)])
+         LoreBuilder.machine(MachineTier.ADVANCED, MachineType.GENERATOR),
+         LoreBuilder.powerBuffer(256),
+         LoreBuilder.powerPerSecond(40)])
 
 /*
   --- Miscellaneous ---
@@ -125,7 +113,7 @@ def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
     }
 }
         .setCapacity(64)
-        .setEnergyProduction(8).register(plug))
+        .setEnergyProduction(16).register(plug))
 
 (new CoalGenerator(group, ICOAL_GENERATOR_2, type, nullRecipe) {
     @Override
@@ -142,7 +130,7 @@ def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
     }
 }
         .setCapacity(128)
-        .setEnergyProduction(16).register(plug))
+        .setEnergyProduction(18).register(plug))
 
 (new CoalGenerator(group, ICOAL_GENERATOR_3, type, nullRecipe) {
     @Override
@@ -159,7 +147,7 @@ def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
     }
 }
         .setCapacity(256)
-        .setEnergyProduction(32).register(plug))
+        .setEnergyProduction(20).register(plug))
 
 (new CoalGenerator(group, ICOAL_GENERATOR_4, type, nullRecipe) {
     @Override
@@ -169,14 +157,14 @@ def ICOAL_GENERATOR_4 = new SlimefunItemStack("DUMO_COAL_GENERATOR_4",
 
     @Override
     protected void registerDefaultFuelTypes() {
-        registerFuel(new MachineFuel(4, new ItemStack(Material.COAL)))
-        registerFuel(new MachineFuel(40, new ItemStack(Material.COAL_BLOCK)))
-        registerFuel(new MachineFuel(6, new ItemStack(Material.BLAZE_ROD)))
-        registerFuel(new MachineFuel(10, new ItemStack(Material.DRIED_KELP_BLOCK)))
+        registerFuel(new MachineFuel(6, new ItemStack(Material.COAL)))
+        registerFuel(new MachineFuel(60, new ItemStack(Material.COAL_BLOCK)))
+        registerFuel(new MachineFuel(9, new ItemStack(Material.BLAZE_ROD)))
+        registerFuel(new MachineFuel(15, new ItemStack(Material.DRIED_KELP_BLOCK)))
     }
 }
         .setCapacity(256)
-        .setEnergyProduction(32).register(plug))
+        .setEnergyProduction(40).register(plug))
 
 // GENERATORS REGISTER END
 

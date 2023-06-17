@@ -28,7 +28,7 @@ reg.registerProgram(new AbstractProgram(SpecificProgramType.COAL_GENERATOR, 1, b
     }
 })
 
-reg.registerProgram(new AbstractProgram(SpecificProgramType.COAL_GENERATOR_ADV, 3, buildName("red", "优化煤发电机马达控制程序", false), "<white>优化后的程序<newline>可以使发电机效率整整提高一倍") {
+reg.registerProgram(new AbstractProgram(SpecificProgramType.COAL_GENERATOR_ADV, 3, buildName("red", "煤发电机优化马达控制程序", false), "<white>优化后的程序<newline>可以使发电机效率整整提高一倍") {
     @Override
     void load(@NotNull AbstractProgram program, @NotNull Location l, @NotNull SlimefunBlockData data) {
         data.setData("progressive", "2")
