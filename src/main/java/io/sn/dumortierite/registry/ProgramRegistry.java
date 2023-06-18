@@ -5,26 +5,28 @@ import io.sn.dumortierite.utils.AbstractProgram;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProgramRegistry {
 
-    private final List<AbstractProgram> registry = new ArrayList<>();
+    private final Map<String, AbstractProgram> registry = new HashMap<>();
     private final List<String> idRegistry = new ArrayList<>();
 
     @Nullable
     public AbstractProgram getProgramById(String id) {
-        for (AbstractProgram ap : this.registry) {
-            if (ap.getId().equals(id)) {
-                return ap;
+        for (String s : registry.keySet()) {
+            if (s.equals(id)) {
+                return registry.get(s);
             }
         }
         return null;
     }
 
-    public void registerProgram(AbstractProgram program) {
-        registry.add(program);
-        idRegistry.add(program.getId());
+    public void registerProgram(String id, AbstractProgram program) {
+        registry.put(id, program);
+        idRegistry.add(id);
     }
 
     public List<String> getAllAvaliableId() {

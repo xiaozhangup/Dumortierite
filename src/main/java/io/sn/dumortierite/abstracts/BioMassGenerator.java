@@ -7,6 +7,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
@@ -24,11 +25,13 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -39,8 +42,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static io.sn.dumortierite.utils.LocationUtils.locOffset;
+
 @SuppressWarnings("deprecation")
 public abstract class BioMassGenerator extends AGenerator {
+
+    private static final String KEY_PARTICLE_ENABLED = "enabled";
 
     private static final int[] BORDER = {0, 4, 8, 9, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 31, 35, 36, 40, 44, 45, 46, 47, 47, 48, 49, 50, 51, 52, 53};
 
@@ -54,7 +61,7 @@ public abstract class BioMassGenerator extends AGenerator {
     private static final int SLOT_INDICATOR = 20;
     private static final int SLOT_CIRCUIT = 17;
 
-    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.BIOMASS_GENERATOR, SpecificProgramType.BIOMASS_GENERATOR_ADV}, this);
+    private final ProgramLoader programLoader = new ProgramLoader(ProcessorType.GENERATOR, new SpecificProgramType[]{SpecificProgramType.BIOMASS_GENERATOR}, this);
 
     private final MachineProcessor<FuelOperation> processor = new MachineProcessor<>(this);
 
@@ -68,6 +75,11 @@ public abstract class BioMassGenerator extends AGenerator {
             @Override
             public void init() {
                 constructMenu(this);
+            }
+
+            @Override
+            public void newInstance(BlockMenu menu, Block b) {
+                updateBlockInventory(menu, b);
             }
 
             @Override
@@ -85,8 +97,21 @@ public abstract class BioMassGenerator extends AGenerator {
             }
         };
 
-        addItemHandler(onBlockBreak());
+        addItemHandler(onBlockBreak(), onBlockPlace());
         registerDefaultFuelTypes();
+    }
+
+    @Nonnull
+    protected BlockPlaceHandler onBlockPlace() {
+        return new BlockPlaceHandler(false) {
+            @Override
+            public void onPlayerPlace(@NotNull BlockPlaceEvent e) {
+                var blockData = StorageCacheUtils.getBlock(e.getBlock().getLocation());
+                if (blockData != null) {
+                    blockData.setData(KEY_PARTICLE_ENABLED, String.valueOf(false));
+                }
+            }
+        };
     }
 
     @Nonnull
@@ -109,6 +134,26 @@ public abstract class BioMassGenerator extends AGenerator {
         };
     }
 
+    private void updateBlockInventory(BlockMenu menu, Block b) {
+        var blockData = StorageCacheUtils.getBlock(b.getLocation());
+        String val;
+        if (blockData == null || (val = blockData.getData(KEY_PARTICLE_ENABLED)) == null || val.equals(String.valueOf(false))) {
+            menu.replaceExistingItem(SLOT_OPTION[0], new CustomItemStack(Material.GUNPOWDER, "&7是否启用粒子效果: &4✘", "", "&e> 单击启用"));
+            menu.addMenuClickHandler(SLOT_OPTION[0], (p, slot, item, action) -> {
+                StorageCacheUtils.setData(b.getLocation(), KEY_PARTICLE_ENABLED, String.valueOf(true));
+                updateBlockInventory(menu, b);
+                return false;
+            });
+        } else {
+            menu.replaceExistingItem(SLOT_OPTION[0], new CustomItemStack(Material.REDSTONE, "&7是否启用粒子效果: &2✔", "", "&e> 单击关闭"));
+            menu.addMenuClickHandler(SLOT_OPTION[0], (p, slot, item, action) -> {
+                StorageCacheUtils.setData(b.getLocation(), KEY_PARTICLE_ENABLED, String.valueOf(false));
+                updateBlockInventory(menu, b);
+                return false;
+            });
+        }
+    }
+
     @Override
     public @NotNull MachineProcessor<FuelOperation> getMachineProcessor() {
         return this.processor;
@@ -124,38 +169,7 @@ public abstract class BioMassGenerator extends AGenerator {
         preset.addMenuClickHandler(SLOT_CIRCUIT, (p, slot, item, action) -> true);
 
         for (int i : SLOT_OPTION) {
-            if (i == SLOT_OPTION[0]) {
-                preset.addItem(i, new CustomItemStack(Material.GUNPOWDER, "&f粒子效果 (加工时): &c关闭"), new ChestMenu.AdvancedMenuClickHandler() {
-                    @Override
-                    public boolean onClick(InventoryClickEvent e, Player p, int slot, ItemStack cursor, ClickAction action) {
-                        var loc = Objects.requireNonNull(e.getClickedInventory()).getLocation();
-                        if (loc != null) {
-                            var data = StorageCacheUtils.getBlock(loc);
-                            if (data != null) {
-                                if (Boolean.parseBoolean(data.getData("switch-particle"))) {
-                                    data.setData("switch-particle", "true");
-                                    var im = Objects.requireNonNull(e.getCurrentItem()).getItemMeta();
-                                    im.displayName(DumoCore.Companion.getMinimsg().deserialize("<white>粒子效果 (加工时): <green>启用"));
-                                    e.getCurrentItem().setItemMeta(im);
-                                    e.getCurrentItem().setType(Material.REDSTONE);
-                                } else {
-                                    data.setData("switch-particle", "false");
-                                    var im = Objects.requireNonNull(e.getCurrentItem()).getItemMeta();
-                                    im.displayName(DumoCore.Companion.getMinimsg().deserialize("<white>粒子效果 (加工时): <red>关闭"));
-                                    e.getCurrentItem().setItemMeta(im);
-                                }
-                            }
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onClick(Player p, int slot, ItemStack item, ClickAction action) {
-                        return false;
-                    }
-                });
-            } else
-                preset.addItem(i, UIUtils.NO_OPTION, ChestMenuUtils.getEmptyClickHandler());
+            preset.addItem(i, UIUtils.NO_OPTION, ChestMenuUtils.getEmptyClickHandler());
         }
 
         for (int i : getOutputSlots()) {
@@ -179,10 +193,6 @@ public abstract class BioMassGenerator extends AGenerator {
 
     @Override
     public int getGeneratedOutput(@NotNull Location l, @NotNull SlimefunBlockData data) {
-        if (data.getData("switch-particle") == null) {
-            data.setData("switch-particle", "false");
-        }
-
         BlockMenu inv = StorageCacheUtils.getMenu(l);
         FuelOperation operation = processor.getOperation(l);
 
@@ -222,9 +232,8 @@ public abstract class BioMassGenerator extends AGenerator {
 
                     if (getCapacity() - charge >= getEnergyProduction()) {
                         operation.addProgress(progressive);
-                        if (Boolean.parseBoolean(data.getData("switch-particle"))) {
-                            l.getWorld().spawnParticle(Particle.SLIME, l, 10, 0.5, 1.2, 0.5);
-                        }
+                        if ("true".equals(data.getData(KEY_PARTICLE_ENABLED)))
+                            l.getWorld().spawnParticle(Particle.BLOCK_CRACK, locOffset(l, 0.5, 0.5, 0.5), 10, 0.1, 0.1, 0.1, 0.001, Bukkit.createBlockData(Material.SLIME_BLOCK));
                         return getEnergyProduction() * progressive;
                     }
 
